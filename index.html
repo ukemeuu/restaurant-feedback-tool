@@ -46,7 +46,7 @@
 
                 <!-- FORM VIEW -->
                 <div id="formView">
-                    <form id="feedbackForm" class="space-y-5">
+                    <form id="feedbackForm" class="space-y-5" onsubmit="event.preventDefault(); handleSubmit(event)">
 
                         <!-- Service Type -->
                         <section>
@@ -415,7 +415,6 @@
                 { key: "food", targetId: "foodRating", labelId: "foodLabel" },
                 { key: "service", targetId: "serviceRating", labelId: "serviceLabel" },
                 { key: "speed", targetId: "speedRating", labelId: "speedLabel" },
-                { key: "cleanliness", targetId: "cleanlinessRating", labelId: "cleanlinessLabel" },
             ];
 
             rows.forEach((row) => {
@@ -554,7 +553,6 @@
                 foodRating: Number(document.getElementById("foodRating").value || 0) || null,
                 serviceRating: Number(document.getElementById("serviceRating").value || 0) || null,
                 speedRating: Number(document.getElementById("speedRating").value || 0) || null,
-                cleanlinessRating: Number(document.getElementById("cleanlinessRating").value || 0) || null,
 
                 comments: document.getElementById("comments").value || "",
                 photoDataUrl: photoDataUrl || null,
@@ -587,6 +585,7 @@
                 showStatus("Feedback sent successfully. Thank you! 🙏", "success");
                 showThankYou(codeForScreen);
             } catch (err) {
+                console.error("Fetch failed:", err);
                 setSubmitLoading(false);
                 showStatus("We could not reach the server. Your feedback is queued and will sync when online.", "warn");
                 showThankYou(codeForScreen);
@@ -608,7 +607,7 @@
             });
 
             document.getElementById("photo").addEventListener("change", handlePhotoChange);
-            document.getElementById("feedbackForm").addEventListener("submit", handleSubmit);
+            // document.getElementById("feedbackForm").addEventListener("submit", handleSubmit);
             document.getElementById("anotherFeedbackBtn").addEventListener("click", showForm);
 
             // Service type buttons

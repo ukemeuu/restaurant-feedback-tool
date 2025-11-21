@@ -504,10 +504,8 @@
                         // fire-and-forget; if CORS blocks reading response, we still treat  as success
                         await fetch(SUBMISSION_ENDPOINT, {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(item),
+                            mode: 'no-cors',
+                            body: JSON.stringify(item)
                         });
                         // If it throws, we push to remaining
                     } catch (err) {
@@ -568,23 +566,22 @@
             try {
                 await fetch(SUBMISSION_ENDPOINT, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                });
-                // if successful, clear from queue (remove one matching instance)
-                submissionQueue.shift();
-                saveQueue();
-                setSubmitLoading(false);
-                showStatus('Feedback sent successfully. Thank you! 🙏', 'success');
-                showThankYou(codeForScreen);
-            } catch (err) {
-                // stay in queue, show offline style message
-                setSubmitLoading(false);
-                showStatus('We could not reach the server. Your feedback is queued and will sync when online.', 'warn');
-                showThankYou(codeForScreen);
-            }
+                    mode: 'no-cors',              // prevents CORS blocking
+                    body: JSON.stringify(payload) // no headers => no preflight
+                });,
+            });
+            // if successful, clear from queue (remove one matching instance)
+            submissionQueue.shift();
+            saveQueue();
+            setSubmitLoading(false);
+            showStatus('Feedback sent successfully. Thank you! 🙏', 'success');
+            showThankYou(codeForScreen);
+        } catch (err) {
+            // stay in queue, show offline style message
+            setSubmitLoading(false);
+            showStatus('We could not reach the server. Your feedback is queued and will sync when online.', 'warn');
+            showThankYou(codeForScreen);
+        }
         }
 
         // =======================

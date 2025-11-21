@@ -47,6 +47,63 @@
                 <!-- FORM VIEW -->
                 <div id="formView">
                     <form id="feedbackForm" class="space-y-5">
+
+                        <!-- Service Type -->
+                        <section>
+                            <label class="block text-sm font-medium text-gray-800 mb-2">
+                                How were you served? <span class="text-gray-400 text-xs">(optional)</span>
+                            </label>
+
+                            <div class="grid grid-cols-2 gap-2" id="serviceTypeButtons">
+                                <button type="button" data-value="Dine-in"
+                                    class="service-type-btn px-3 py-3 rounded-xl border bg-slate-50 text-sm font-medium text-gray-700 hover:bg-slate-100 active:scale-95">
+                                    🍽️ Dine-in
+                                </button>
+
+                                <button type="button" data-value="Pick-up"
+                                    class="service-type-btn px-3 py-3 rounded-xl border bg-slate-50 text-sm font-medium text-gray-700 hover:bg-slate-100 active:scale-95">
+                                    🛍️ Pick-up
+                                </button>
+
+                                <button type="button" data-value="UberEats"
+                                    class="service-type-btn px-3 py-3 rounded-xl border bg-slate-50 text-sm font-medium text-gray-700 hover:bg-slate-100 active:scale-95">
+                                    🚗 UberEats
+                                </button>
+
+                                <button type="button" data-value="Glovo"
+                                    class="service-type-btn px-3 py-3 rounded-xl border bg-slate-50 text-sm font-medium text-gray-700 hover:bg-slate-100 active:scale-95">
+                                    🟡 Glovo
+                                </button>
+
+                                <button type="button" data-value="Bolt Food"
+                                    class="service-type-btn col-span-2 px-3 py-3 rounded-xl border bg-slate-50 text-sm font-medium text-gray-700 hover:bg-slate-100 active:scale-95">
+                                    ⚡ Bolt Food
+                                </button>
+                            </div>
+
+                            <input type="hidden" id="serviceType" />
+                        </section>
+
+                        <!-- Customer Name -->
+                        <section>
+                            <label for="customerName" class="block text-sm font-medium text-gray-800 mb-1">
+                                Customer name <span class="text-gray-400 text-xs">(optional)</span>
+                            </label>
+                            <input id="customerName" type="text"
+                                class="block w-full rounded-xl border border-gray-200 bg-slate-50 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="e.g., Michael" />
+                        </section>
+
+                        <!-- Order ID -->
+                        <section>
+                            <label for="orderId" class="block text-sm font-medium text-gray-800 mb-1">
+                                Order ID <span class="text-gray-400 text-xs">(optional)</span>
+                            </label>
+                            <input id="orderId" type="text"
+                                class="block w-full rounded-xl border border-gray-200 bg-slate-50 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="If delivery / online order" />
+                        </section>
+
                         <!-- Overall Experience -->
                         <section>
                             <label class="block text-sm font-medium text-gray-800 mb-2">
@@ -275,23 +332,16 @@
 
             banner.classList.remove(
                 "hidden",
-                "bg-green-50",
-                "text-green-700",
-                "bg-red-50",
-                "text-red-700",
-                "bg-yellow-50",
-                "text-yellow-700"
+                "bg-green-50", "text-green-700",
+                "bg-red-50", "text-red-700",
+                "bg-yellow-50", "text-yellow-700"
             );
 
             text.textContent = message;
 
-            if (type === "success") {
-                banner.classList.add("bg-green-50", "text-green-700");
-            } else if (type === "error") {
-                banner.classList.add("bg-red-50", "text-red-700");
-            } else {
-                banner.classList.add("bg-yellow-50", "text-yellow-700");
-            }
+            if (type === "success") banner.classList.add("bg-green-50", "text-green-700");
+            else if (type === "error") banner.classList.add("bg-red-50", "text-red-700");
+            else banner.classList.add("bg-yellow-50", "text-yellow-700");
 
             setTimeout(() => banner.classList.add("hidden"), 5000);
         }
@@ -330,12 +380,14 @@
         }
 
         function resetRatingButtons() {
+            // Overall
             document.querySelectorAll("#overallRatingButtons button").forEach((btn) => {
                 btn.classList.remove("bg-primary", "text-white", "border-primary");
                 btn.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
             });
             document.getElementById("overallRating").value = "";
 
+            // Quick ratings
             document.querySelectorAll("[data-row] [data-value]").forEach((btn) => {
                 btn.classList.remove("bg-primary", "text-white", "border-primary");
                 btn.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
@@ -345,14 +397,18 @@
                 document.getElementById(k + "Label").textContent = "Not rated";
                 document.getElementById(k + "Rating").value = "";
             });
+
+            // Service type
+            document.getElementById("serviceType").value = "";
+            document.querySelectorAll(".service-type-btn").forEach((b) => {
+                b.classList.remove("bg-primary", "text-white", "border-primary");
+                b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
+            });
         }
 
         function updateLabel(id, value) {
             const labelEl = document.getElementById(id);
-            if (!value) {
-                labelEl.textContent = "Not rated";
-                return;
-            }
+            if (!value) return (labelEl.textContent = "Not rated");
             const words = {
                 1: "1 - Poor",
                 2: "2 - Fair",
@@ -377,7 +433,6 @@
             rows.forEach((row) => {
                 const container = document.querySelector(`[data-row="${row.key}"]`);
                 if (!container) return;
-
                 container.innerHTML = "";
 
                 for (let i = 1; i <= 5; i++) {
@@ -433,7 +488,7 @@
         }
 
         // =======================
-        // PHOTO HANDLING
+        // PHOTO
         // =======================
         function handlePhotoChange(e) {
             const file = e.target.files && e.target.files[0];
@@ -448,14 +503,12 @@
             label.textContent = file.name;
 
             const reader = new FileReader();
-            reader.onload = function (ev) {
-                photoDataUrl = ev.target.result;
-            };
+            reader.onload = (ev) => (photoDataUrl = ev.target.result);
             reader.readAsDataURL(file);
         }
 
         // =======================
-        // NETWORK / FLUSH QUEUE
+        // QUEUE FLUSH
         // =======================
         async function flushQueue() {
             if (isFlushing) return;
@@ -490,7 +543,7 @@
         }
 
         // =======================
-        // FORM SUBMIT
+        // SUBMIT
         // =======================
         async function handleSubmit(e) {
             e.preventDefault();
@@ -504,28 +557,29 @@
             const payload = {
                 timestamp: new Date().toISOString(),
                 code: generateCode(),
+
+                serviceType: document.getElementById("serviceType").value || "",
+                customerName: document.getElementById("customerName").value || "",
+                orderId: document.getElementById("orderId").value || "",
+
                 overallRating: Number(overallRating),
                 foodRating: Number(document.getElementById("foodRating").value || 0) || null,
                 serviceRating: Number(document.getElementById("serviceRating").value || 0) || null,
                 speedRating: Number(document.getElementById("speedRating").value || 0) || null,
                 cleanlinessRating: Number(document.getElementById("cleanlinessRating").value || 0) || null,
+
                 comments: document.getElementById("comments").value || "",
                 photoDataUrl: photoDataUrl || null,
             };
 
-            // Always enqueue first
             enqueueSubmission(payload);
-
             setSubmitLoading(true);
             const codeForScreen = payload.code;
 
             if (!navigator.onLine || !SUBMISSION_ENDPOINT) {
                 setTimeout(() => {
                     setSubmitLoading(false);
-                    showStatus(
-                        "You seem offline. We saved your feedback and will sync when you are online.",
-                        "warn"
-                    );
+                    showStatus("You seem offline. We saved your feedback and will sync when you are online.", "warn");
                     showThankYou(codeForScreen);
                 }, 500);
                 return;
@@ -538,7 +592,6 @@
                     body: JSON.stringify(payload),
                 });
 
-                // Sent ok -> remove from queue
                 submissionQueue.shift();
                 saveQueue();
 
@@ -547,10 +600,7 @@
                 showThankYou(codeForScreen);
             } catch (err) {
                 setSubmitLoading(false);
-                showStatus(
-                    "We could not reach the server. Your feedback is queued and will sync when online.",
-                    "warn"
-                );
+                showStatus("We could not reach the server. Your feedback is queued and will sync when online.", "warn");
                 showThankYou(codeForScreen);
             }
         }
@@ -562,8 +612,7 @@
             loadQueue();
             createRatingButtons();
 
-            document
-                .getElementById("overallRatingButtons")
+            document.getElementById("overallRatingButtons")
                 .addEventListener("click", handleOverallClick);
 
             document.querySelectorAll("[data-row]").forEach((rowEl) => {
@@ -571,10 +620,24 @@
             });
 
             document.getElementById("photo").addEventListener("change", handlePhotoChange);
-
             document.getElementById("feedbackForm").addEventListener("submit", handleSubmit);
-
             document.getElementById("anotherFeedbackBtn").addEventListener("click", showForm);
+
+            // Service type buttons
+            document.getElementById("serviceTypeButtons").addEventListener("click", (e) => {
+                const btn = e.target.closest("button[data-value]");
+                if (!btn) return;
+
+                document.getElementById("serviceType").value = btn.dataset.value;
+
+                document.querySelectorAll(".service-type-btn").forEach((b) => {
+                    b.classList.remove("bg-primary", "text-white", "border-primary");
+                    b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
+                });
+
+                btn.classList.add("bg-primary", "text-white", "border-primary");
+                btn.classList.remove("bg-slate-50", "text-gray-700", "border-gray-200");
+            });
 
             window.addEventListener("online", () => {
                 showStatus("Back online. Syncing feedback...", "info");

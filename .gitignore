@@ -1,0 +1,63 @@
+###################################
+# macOS SYSTEM FILES
+###################################
+.DS_Store
+.AppleDouble
+.LSOverride
+
+###################################
+# NODE / NPM (in case you install later)
+###################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+###################################
+# BUILD OUTPUT (future-proof)
+###################################
+dist/
+build/
+.tmp/
+.cache/
+
+###################################
+# ENVIRONMENT VARIABLES (never upload secrets)
+###################################
+.env
+.env.local
+.env.production
+.env.development
+.env.*
+.supabase
+
+###################################
+# LOG FILES
+###################################
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+###################################
+# EDITOR FILES
+###################################
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+###################################
+# PYTHON SERVER ARTIFACTS (if you test locally)
+###################################
+__pycache__/
+*.pyc
+
+###################################
+# OPTIONAL: IF YOU STORE IMAGES FOR TESTING
+###################################
+uploads/
+photos/

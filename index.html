@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Restaurant Feedback</title>
 
-    <!-- Tailwind CDN (no external UI framework) -->
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -14,7 +14,7 @@
                 extend: {
                     colors: {
                         primary: {
-                            DEFAULT: '#16a34a', // green-600
+                            DEFAULT: "#16a34a", // green-600
                         },
                     },
                 },
@@ -53,8 +53,6 @@
                                 Overall Experience <span class="text-red-500">*</span>
                             </label>
                             <div class="flex justify-between gap-1" id="overallRatingButtons">
-                                <!-- 1–5 big emoji buttons -->
-                                <!-- Use data-target to link to hidden input -->
                                 <button type="button"
                                     class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl border text-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-95"
                                     data-target="overallRating" data-value="1">
@@ -110,19 +108,9 @@
                                         <span class="text-xs font-medium text-gray-700">
                                             Food <span class="text-base">🌟</span>
                                         </span>
-                                        <span class="text-[10px] text-gray-400" id="foodLabel">
-                                            Not rated
-                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="foodLabel">Not rated</span>
                                     </div>
-                                    <div class="flex gap-1">
-                                        <!-- Reusable rating buttons -->
-                                        <!-- data-target links to hidden input ID -->
-                                        <!-- 1..5 -->
-                                        <template id="ratingTemplate"></template>
-                                        <div class="flex gap-1 w-full" data-row="food">
-                                            <!-- buttons added by JS -->
-                                        </div>
-                                    </div>
+                                    <div class="flex gap-1 w-full" data-row="food"></div>
                                     <input type="hidden" id="foodRating" />
                                 </div>
 
@@ -132,13 +120,9 @@
                                         <span class="text-xs font-medium text-gray-700">
                                             Service <span class="text-base">😊</span>
                                         </span>
-                                        <span class="text-[10px] text-gray-400" id="serviceLabel">
-                                            Not rated
-                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="serviceLabel">Not rated</span>
                                     </div>
-                                    <div class="flex gap-1" data-row="service">
-                                        <!-- buttons added by JS -->
-                                    </div>
+                                    <div class="flex gap-1 w-full" data-row="service"></div>
                                     <input type="hidden" id="serviceRating" />
                                 </div>
 
@@ -148,13 +132,9 @@
                                         <span class="text-xs font-medium text-gray-700">
                                             Speed <span class="text-base">⚡</span>
                                         </span>
-                                        <span class="text-[10px] text-gray-400" id="speedLabel">
-                                            Not rated
-                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="speedLabel">Not rated</span>
                                     </div>
-                                    <div class="flex gap-1" data-row="speed">
-                                        <!-- buttons added by JS -->
-                                    </div>
+                                    <div class="flex gap-1 w-full" data-row="speed"></div>
                                     <input type="hidden" id="speedRating" />
                                 </div>
 
@@ -164,13 +144,9 @@
                                         <span class="text-xs font-medium text-gray-700">
                                             Cleanliness <span class="text-base">🧹</span>
                                         </span>
-                                        <span class="text-[10px] text-gray-400" id="cleanlinessLabel">
-                                            Not rated
-                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="cleanlinessLabel">Not rated</span>
                                     </div>
-                                    <div class="flex gap-1" data-row="cleanliness">
-                                        <!-- buttons added by JS -->
-                                    </div>
+                                    <div class="flex gap-1 w-full" data-row="cleanliness"></div>
                                     <input type="hidden" id="cleanlinessRating" />
                                 </div>
                             </div>
@@ -197,14 +173,11 @@
                                     <span class="text-lg">📷</span>
                                     <div class="flex flex-col">
                                         <span>Camera or gallery</span>
-                                        <span id="photoFileName" class="text-[10px] text-gray-400">
-                                            No file selected
-                                        </span>
+                                        <span id="photoFileName" class="text-[10px] text-gray-400">No file
+                                            selected</span>
                                     </div>
                                 </div>
-                                <span class="text-[10px] text-gray-400">
-                                    Optional
-                                </span>
+                                <span class="text-[10px] text-gray-400">Optional</span>
                             </label>
                             <input id="photo" type="file" accept="image/*" capture="environment" class="hidden" />
                         </section>
@@ -232,9 +205,7 @@
                 <!-- THANK YOU VIEW -->
                 <div id="thankYouView" class="hidden text-center py-6">
                     <div class="text-4xl mb-2">🎉</div>
-                    <h2 class="text-lg font-semibold text-gray-900 mb-1">
-                        Thank you!
-                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-1">Thank you!</h2>
                     <p class="text-sm text-gray-700 mb-3 px-4">
                         Show this screen at the counter for
                         <span class="font-semibold text-primary">10% off</span> your next visit.
@@ -264,20 +235,18 @@
         // =======================
         // CONFIG
         // =======================
-        // 1) Google Sheets webhook (Apps Script URL) OR
-        // 2) Any Supabase/HTTP endpoint that accepts JSON POST.
-        const SUBMISSION_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzM7CZwkJQlX7-UPBls-1vCxae4UFGFi-ui4sDWol5aW4GvTTJlmyTDRvTDPY6WN0Q4Q/exec';
+        const SUBMISSION_ENDPOINT =
+            "https://script.google.com/macros/s/AKfycbzM7CZwkJQlX7-UPBls-1vCxae4UFGFi-ui4sDWol5aW4GvTTJlmyTDRvTDPY6WN0Q4Q/exec";
 
-        // How often (ms) to try flushing queued submissions when online
         const FLUSH_INTERVAL_MS = 5000;
-        const QUEUE_KEY = 'restaurantFeedbackQueue_v1';
+        const QUEUE_KEY = "restaurantFeedbackQueue_v1";
 
         // =======================
         // STATE
         // =======================
         let submissionQueue = [];
         let isFlushing = false;
-        let photoDataUrl = null; // base64 image (optional)
+        let photoDataUrl = null;
 
         // =======================
         // HELPERS
@@ -300,103 +269,98 @@
             saveQueue();
         }
 
-        function showStatus(message, type = 'info') {
-            const banner = document.getElementById('statusBanner');
-            const text = document.getElementById('statusText');
+        function showStatus(message, type = "info") {
+            const banner = document.getElementById("statusBanner");
+            const text = document.getElementById("statusText");
 
-            banner.classList.remove('hidden', 'bg-green-50', 'text-green-700', 'bg-red-50', 'text-red-700', 'bg-yellow-50', 'text-yellow-700');
+            banner.classList.remove(
+                "hidden",
+                "bg-green-50",
+                "text-green-700",
+                "bg-red-50",
+                "text-red-700",
+                "bg-yellow-50",
+                "text-yellow-700"
+            );
+
             text.textContent = message;
 
-            if (type === 'success') {
-                banner.classList.add('bg-green-50', 'text-green-700');
-            } else if (type === 'error') {
-                banner.classList.add('bg-red-50', 'text-red-700');
-            } else if (type === 'warn') {
-                banner.classList.add('bg-yellow-50', 'text-yellow-700');
+            if (type === "success") {
+                banner.classList.add("bg-green-50", "text-green-700");
+            } else if (type === "error") {
+                banner.classList.add("bg-red-50", "text-red-700");
             } else {
-                banner.classList.add('bg-yellow-50', 'text-yellow-700');
+                banner.classList.add("bg-yellow-50", "text-yellow-700");
             }
 
-            // Auto hide after 5 seconds
-            setTimeout(() => {
-                banner.classList.add('hidden');
-            }, 5000);
+            setTimeout(() => banner.classList.add("hidden"), 5000);
         }
 
         function setSubmitLoading(isLoading) {
-            const btn = document.getElementById('submitButton');
-            const text = document.getElementById('submitText');
-            const spinner = document.getElementById('submitSpinner');
+            const btn = document.getElementById("submitButton");
+            const text = document.getElementById("submitText");
+            const spinner = document.getElementById("submitSpinner");
             btn.disabled = isLoading;
             if (isLoading) {
-                spinner.classList.remove('hidden');
-                text.textContent = 'Sending...';
+                spinner.classList.remove("hidden");
+                text.textContent = "Sending...";
             } else {
-                spinner.classList.add('hidden');
-                text.textContent = 'Submit Feedback';
+                spinner.classList.add("hidden");
+                text.textContent = "Submit Feedback";
             }
         }
 
         function generateCode() {
-            // random 6-digit code (100000–999999)
             return String(Math.floor(100000 + Math.random() * 900000));
         }
 
         function showThankYou(code) {
-            document.getElementById('discountCode').textContent = code;
-            document.getElementById('formView').classList.add('hidden');
-            document.getElementById('thankYouView').classList.remove('hidden');
+            document.getElementById("discountCode").textContent = code;
+            document.getElementById("formView").classList.add("hidden");
+            document.getElementById("thankYouView").classList.remove("hidden");
         }
 
         function showForm() {
-            document.getElementById('thankYouView').classList.add('hidden');
-            document.getElementById('formView').classList.remove('hidden');
-            // reset form
-            document.getElementById('feedbackForm').reset();
+            document.getElementById("thankYouView").classList.add("hidden");
+            document.getElementById("formView").classList.remove("hidden");
+            document.getElementById("feedbackForm").reset();
             photoDataUrl = null;
-            document.getElementById('photoFileName').textContent = 'No file selected';
+            document.getElementById("photoFileName").textContent = "No file selected";
             resetRatingButtons();
         }
 
         function resetRatingButtons() {
-            // Overall
-            document.querySelectorAll('#overallRatingButtons button').forEach(btn => {
-                btn.classList.remove('bg-primary', 'text-white', 'border-primary');
-                btn.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            document.querySelectorAll("#overallRatingButtons button").forEach((btn) => {
+                btn.classList.remove("bg-primary", "text-white", "border-primary");
+                btn.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
             });
-            document.getElementById('overallRating').value = '';
+            document.getElementById("overallRating").value = "";
 
-            // Quick ratings
-            document.querySelectorAll('[data-row] [data-value]').forEach(btn => {
-                btn.classList.remove('bg-primary', 'text-white', 'border-primary');
-                btn.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            document.querySelectorAll("[data-row] [data-value]").forEach((btn) => {
+                btn.classList.remove("bg-primary", "text-white", "border-primary");
+                btn.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
             });
 
-            document.getElementById('foodLabel').textContent = 'Not rated';
-            document.getElementById('serviceLabel').textContent = 'Not rated';
-            document.getElementById('speedLabel').textContent = 'Not rated';
-            document.getElementById('cleanlinessLabel').textContent = 'Not rated';
-
-            document.getElementById('foodRating').value = '';
-            document.getElementById('serviceRating').value = '';
-            document.getElementById('speedRating').value = '';
-            document.getElementById('cleanlinessRating').value = '';
+            ["food", "service", "speed", "cleanliness"].forEach((k) => {
+                document.getElementById(k + "Label").textContent = "Not rated";
+                document.getElementById(k + "Rating").value = "";
+            });
         }
 
         function updateLabel(id, value) {
             const labelEl = document.getElementById(id);
             if (!value) {
-                labelEl.textContent = 'Not rated';
+                labelEl.textContent = "Not rated";
                 return;
             }
             const words = {
-                1: '1 - Poor',
-                2: '2 - Fair',
-                3: '3 - Okay',
-                4: '4 - Good',
-                5: '5 - Excellent',
+                1: "1 - Poor",
+                2: "2 - Fair",
+                3: "3 - Okay",
+                4: "4 - Good",
+                5: "5 - Excellent",
             };
-            labelEl.textContent = words[value] || 'Not rated';
+            labelEl.textContent = words[value] || "Not rated";
         }
 
         // =======================
@@ -404,24 +368,27 @@
         // =======================
         function createRatingButtons() {
             const rows = [
-                { key: 'food', targetId: 'foodRating', labelId: 'foodLabel' },
-                { key: 'service', targetId: 'serviceRating', labelId: 'serviceLabel' },
-                { key: 'speed', targetId: 'speedRating', labelId: 'speedLabel' },
-                { key: 'cleanliness', targetId: 'cleanlinessRating', labelId: 'cleanlinessLabel' },
+                { key: "food", targetId: "foodRating", labelId: "foodLabel" },
+                { key: "service", targetId: "serviceRating", labelId: "serviceLabel" },
+                { key: "speed", targetId: "speedRating", labelId: "speedLabel" },
+                { key: "cleanliness", targetId: "cleanlinessRating", labelId: "cleanlinessLabel" },
             ];
-            rows.forEach(row => {
+
+            rows.forEach((row) => {
                 const container = document.querySelector(`[data-row="${row.key}"]`);
                 if (!container) return;
-                container.innerHTML = '';
+
+                container.innerHTML = "";
+
                 for (let i = 1; i <= 5; i++) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
+                    const btn = document.createElement("button");
+                    btn.type = "button";
                     btn.textContent = i;
                     btn.dataset.target = row.targetId;
                     btn.dataset.labelId = row.labelId;
                     btn.dataset.value = i;
                     btn.className =
-                        'flex-1 py-1 rounded-lg border text-xs bg-slate-50 border-gray-200 text-gray-700 hover:bg-slate-100 active:scale-95';
+                        "flex-1 py-1 rounded-lg border text-xs bg-slate-50 border-gray-200 text-gray-700 hover:bg-slate-100 active:scale-95";
                     container.appendChild(btn);
                 }
             });
@@ -430,40 +397,38 @@
         function handleOverallClick(e) {
             const btn = e.target.closest('button[data-target="overallRating"]');
             if (!btn) return;
-            const value = btn.dataset.value;
-            document.getElementById('overallRating').value = value;
 
-            // Reset
-            document.querySelectorAll('#overallRatingButtons button').forEach(b => {
-                b.classList.remove('bg-primary', 'text-white', 'border-primary');
-                b.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            const value = btn.dataset.value;
+            document.getElementById("overallRating").value = value;
+
+            document.querySelectorAll("#overallRatingButtons button").forEach((b) => {
+                b.classList.remove("bg-primary", "text-white", "border-primary");
+                b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
             });
 
-            // Highlight selected
-            btn.classList.add('bg-primary', 'text-white', 'border-primary');
-            btn.classList.remove('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            btn.classList.add("bg-primary", "text-white", "border-primary");
+            btn.classList.remove("bg-slate-50", "text-gray-700", "border-gray-200");
         }
 
         function handleQuickRatingClick(e) {
-            const btn = e.target.closest('[data-value][data-target]');
+            const btn = e.target.closest("[data-value][data-target]");
             if (!btn) return;
+
             const value = Number(btn.dataset.value);
             const targetId = btn.dataset.target;
             const labelId = btn.dataset.labelId;
 
-            // update hidden input
             document.getElementById(targetId).value = value;
 
-            // highlight row
             const container = btn.parentElement;
-            container.querySelectorAll('button').forEach(b => {
-                b.classList.remove('bg-primary', 'text-white', 'border-primary');
-                b.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            container.querySelectorAll("button").forEach((b) => {
+                b.classList.remove("bg-primary", "text-white", "border-primary");
+                b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
             });
-            btn.classList.add('bg-primary', 'text-white', 'border-primary');
-            btn.classList.remove('bg-slate-50', 'text-gray-700', 'border-gray-200');
 
-            // label text
+            btn.classList.add("bg-primary", "text-white", "border-primary");
+            btn.classList.remove("bg-slate-50", "text-gray-700", "border-gray-200");
+
             if (labelId) updateLabel(labelId, value);
         }
 
@@ -472,17 +437,18 @@
         // =======================
         function handlePhotoChange(e) {
             const file = e.target.files && e.target.files[0];
-            const label = document.getElementById('photoFileName');
+            const label = document.getElementById("photoFileName");
+
             if (!file) {
-                label.textContent = 'No file selected';
+                label.textContent = "No file selected";
                 photoDataUrl = null;
                 return;
             }
+
             label.textContent = file.name;
 
             const reader = new FileReader();
             reader.onload = function (ev) {
-                // store as data URL; can be large (depends on photo size)
                 photoDataUrl = ev.target.result;
             };
             reader.readAsDataURL(file);
@@ -499,23 +465,24 @@
             isFlushing = true;
             try {
                 const remaining = [];
+
                 for (const item of submissionQueue) {
                     try {
-                        // fire-and-forget; if CORS blocks reading response, we still treat  as success
                         await fetch(SUBMISSION_ENDPOINT, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            body: JSON.stringify(item)
+                            method: "POST",
+                            mode: "no-cors",
+                            body: JSON.stringify(item),
                         });
-                        // If it throws, we push to remaining
                     } catch (err) {
                         remaining.push(item);
                     }
                 }
+
                 submissionQueue = remaining;
                 saveQueue();
+
                 if (!remaining.length) {
-                    showStatus('Queued feedback synced successfully ✅', 'success');
+                    showStatus("Queued feedback synced successfully ✅", "success");
                 }
             } finally {
                 isFlushing = false;
@@ -527,9 +494,10 @@
         // =======================
         async function handleSubmit(e) {
             e.preventDefault();
-            const overallRating = document.getElementById('overallRating').value;
+
+            const overallRating = document.getElementById("overallRating").value;
             if (!overallRating) {
-                showStatus('Please rate your overall experience before submitting.', 'error');
+                showStatus("Please rate your overall experience before submitting.", "error");
                 return;
             }
 
@@ -537,27 +505,27 @@
                 timestamp: new Date().toISOString(),
                 code: generateCode(),
                 overallRating: Number(overallRating),
-                foodRating: Number(document.getElementById('foodRating').value || 0) || null,
-                serviceRating: Number(document.getElementById('serviceRating').value || 0) || null,
-                speedRating: Number(document.getElementById('speedRating').value || 0) || null,
-                cleanlinessRating: Number(document.getElementById('cleanlinessRating').value || 0) || null,
-                comments: document.getElementById('comments').value || '',
+                foodRating: Number(document.getElementById("foodRating").value || 0) || null,
+                serviceRating: Number(document.getElementById("serviceRating").value || 0) || null,
+                speedRating: Number(document.getElementById("speedRating").value || 0) || null,
+                cleanlinessRating: Number(document.getElementById("cleanlinessRating").value || 0) || null,
+                comments: document.getElementById("comments").value || "",
                 photoDataUrl: photoDataUrl || null,
             };
 
-            // Always enqueue first (offline-friendly)
+            // Always enqueue first
             enqueueSubmission(payload);
 
-            // UI feedback
             setSubmitLoading(true);
-
             const codeForScreen = payload.code;
 
             if (!navigator.onLine || !SUBMISSION_ENDPOINT) {
-                // offline / endpoint missing -> rely on queue
                 setTimeout(() => {
                     setSubmitLoading(false);
-                    showStatus('You seem offline. We saved your feedback and will sync when you are online.', 'warn');
+                    showStatus(
+                        "You seem offline. We saved your feedback and will sync when you are online.",
+                        "warn"
+                    );
                     showThankYou(codeForScreen);
                 }, 500);
                 return;
@@ -565,23 +533,26 @@
 
             try {
                 await fetch(SUBMISSION_ENDPOINT, {
-                    method: 'POST',
-                    mode: 'no-cors',              // prevents CORS blocking
-                    body: JSON.stringify(payload) // no headers => no preflight
-                });,
-            });
-            // if successful, clear from queue (remove one matching instance)
-            submissionQueue.shift();
-            saveQueue();
-            setSubmitLoading(false);
-            showStatus('Feedback sent successfully. Thank you! 🙏', 'success');
-            showThankYou(codeForScreen);
-        } catch (err) {
-            // stay in queue, show offline style message
-            setSubmitLoading(false);
-            showStatus('We could not reach the server. Your feedback is queued and will sync when online.', 'warn');
-            showThankYou(codeForScreen);
-        }
+                    method: "POST",
+                    mode: "no-cors",
+                    body: JSON.stringify(payload),
+                });
+
+                // Sent ok -> remove from queue
+                submissionQueue.shift();
+                saveQueue();
+
+                setSubmitLoading(false);
+                showStatus("Feedback sent successfully. Thank you! 🙏", "success");
+                showThankYou(codeForScreen);
+            } catch (err) {
+                setSubmitLoading(false);
+                showStatus(
+                    "We could not reach the server. Your feedback is queued and will sync when online.",
+                    "warn"
+                );
+                showThankYou(codeForScreen);
+            }
         }
 
         // =======================
@@ -592,37 +563,28 @@
             createRatingButtons();
 
             document
-                .getElementById('overallRatingButtons')
-                .addEventListener('click', handleOverallClick);
+                .getElementById("overallRatingButtons")
+                .addEventListener("click", handleOverallClick);
 
-            document
-                .querySelectorAll('[data-row]')
-                .forEach(rowEl => {
-                    rowEl.addEventListener('click', handleQuickRatingClick);
-                });
+            document.querySelectorAll("[data-row]").forEach((rowEl) => {
+                rowEl.addEventListener("click", handleQuickRatingClick);
+            });
 
-            document
-                .getElementById('photo')
-                .addEventListener('change', handlePhotoChange);
+            document.getElementById("photo").addEventListener("change", handlePhotoChange);
 
-            document
-                .getElementById('feedbackForm')
-                .addEventListener('submit', handleSubmit);
+            document.getElementById("feedbackForm").addEventListener("submit", handleSubmit);
 
-            document
-                .getElementById('anotherFeedbackBtn')
-                .addEventListener('click', showForm);
+            document.getElementById("anotherFeedbackBtn").addEventListener("click", showForm);
 
-            window.addEventListener('online', () => {
-                showStatus('Back online. Syncing feedback...', 'info');
+            window.addEventListener("online", () => {
+                showStatus("Back online. Syncing feedback...", "info");
                 flushQueue();
             });
 
-            // Try flushing queue periodically (works for at least 5 minutes offline)
             setInterval(flushQueue, FLUSH_INTERVAL_MS);
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener("DOMContentLoaded", init);
     </script>
 </body>
 

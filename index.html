@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Restaurant Feedback</title>
+
+    <!-- Tailwind CDN (no external UI framework) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#16a34a', // green-600
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+
+<body class="h-full bg-slate-100">
+    <div class="min-h-screen flex items-center justify-center px-4 py-6">
+        <div class="w-full max-w-md">
+            <!-- CARD -->
+            <div class="bg-white shadow-xl rounded-2xl p-5 sm:p-6">
+                <!-- HEADER -->
+                <div class="mb-4 text-center">
+                    <h1 class="text-xl font-semibold text-gray-900">
+                        <!-- Replace this with your restaurant name -->
+                        Pot of Jollof Kitchen
+                    </h1>
+                    <p class="mt-1 text-xs text-gray-500">
+                        We appreciate your feedback 💛
+                    </p>
+                </div>
+
+                <!-- ALERT -->
+                <div id="statusBanner" class="hidden mb-4 text-xs rounded-lg px-3 py-2">
+                    <span id="statusText"></span>
+                </div>
+
+                <!-- FORM VIEW -->
+                <div id="formView">
+                    <form id="feedbackForm" class="space-y-5">
+                        <!-- Overall Experience -->
+                        <section>
+                            <label class="block text-sm font-medium text-gray-800 mb-2">
+                                Overall Experience <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex justify-between gap-1" id="overallRatingButtons">
+                                <!-- 1–5 big emoji buttons -->
+                                <!-- Use data-target to link to hidden input -->
+                                <button type="button"
+                                    class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl border text-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-95"
+                                    data-target="overallRating" data-value="1">
+                                    <span>😡</span>
+                                    <span class="mt-1 text-[10px] text-gray-500">1</span>
+                                </button>
+                                <button type="button"
+                                    class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl border text-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-95"
+                                    data-target="overallRating" data-value="2">
+                                    <span>😕</span>
+                                    <span class="mt-1 text-[10px] text-gray-500">2</span>
+                                </button>
+                                <button type="button"
+                                    class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl border text-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-95"
+                                    data-target="overallRating" data-value="3">
+                                    <span>😐</span>
+                                    <span class="mt-1 text-[10px] text-gray-500">3</span>
+                                </button>
+                                <button type="button"
+                                    class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl border text-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-95"
+                                    data-target="overallRating" data-value="4">
+                                    <span>🙂</span>
+                                    <span class="mt-1 text-[10px] text-gray-500">4</span>
+                                </button>
+                                <button type="button"
+                                    class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl border text-2xl bg-slate-50 hover:bg-slate-100 transition active:scale-95"
+                                    data-target="overallRating" data-value="5">
+                                    <span>🤩</span>
+                                    <span class="mt-1 text-[10px] text-gray-500">5</span>
+                                </button>
+                            </div>
+                            <input type="hidden" id="overallRating" />
+                            <p class="mt-1 text-[11px] text-gray-400">
+                                Tap an emoji to rate your visit.
+                            </p>
+                        </section>
+
+                        <!-- Quick Category Ratings -->
+                        <section>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-sm font-medium text-gray-800">
+                                    Quick ratings (optional)
+                                </label>
+                                <span class="text-[10px] text-gray-400">
+                                    1 = Poor, 5 = Great
+                                </span>
+                            </div>
+
+                            <div class="flex flex-col gap-2">
+                                <!-- Food -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs font-medium text-gray-700">
+                                            Food <span class="text-base">🌟</span>
+                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="foodLabel">
+                                            Not rated
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-1">
+                                        <!-- Reusable rating buttons -->
+                                        <!-- data-target links to hidden input ID -->
+                                        <!-- 1..5 -->
+                                        <template id="ratingTemplate"></template>
+                                        <div class="flex gap-1 w-full" data-row="food">
+                                            <!-- buttons added by JS -->
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="foodRating" />
+                                </div>
+
+                                <!-- Service -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs font-medium text-gray-700">
+                                            Service <span class="text-base">😊</span>
+                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="serviceLabel">
+                                            Not rated
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-1" data-row="service">
+                                        <!-- buttons added by JS -->
+                                    </div>
+                                    <input type="hidden" id="serviceRating" />
+                                </div>
+
+                                <!-- Speed -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs font-medium text-gray-700">
+                                            Speed <span class="text-base">⚡</span>
+                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="speedLabel">
+                                            Not rated
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-1" data-row="speed">
+                                        <!-- buttons added by JS -->
+                                    </div>
+                                    <input type="hidden" id="speedRating" />
+                                </div>
+
+                                <!-- Cleanliness -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs font-medium text-gray-700">
+                                            Cleanliness <span class="text-base">🧹</span>
+                                        </span>
+                                        <span class="text-[10px] text-gray-400" id="cleanlinessLabel">
+                                            Not rated
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-1" data-row="cleanliness">
+                                        <!-- buttons added by JS -->
+                                    </div>
+                                    <input type="hidden" id="cleanlinessRating" />
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Comments -->
+                        <section>
+                            <label for="comments" class="block text-sm font-medium text-gray-800 mb-1">
+                                Anything we can improve? <span class="text-gray-400 text-xs">(optional)</span>
+                            </label>
+                            <textarea id="comments" rows="3"
+                                class="block w-full rounded-xl border border-gray-200 bg-slate-50 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="Tell us what you loved or what we can do better..."></textarea>
+                        </section>
+
+                        <!-- Photo upload -->
+                        <section>
+                            <label class="block text-sm font-medium text-gray-800 mb-1">
+                                Add a photo (optional)
+                            </label>
+                            <label for="photo"
+                                class="flex items-center justify-between gap-3 rounded-xl border border-dashed border-gray-300 bg-slate-50 px-3 py-2 text-xs text-gray-600 cursor-pointer active:scale-[0.99]">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg">📷</span>
+                                    <div class="flex flex-col">
+                                        <span>Camera or gallery</span>
+                                        <span id="photoFileName" class="text-[10px] text-gray-400">
+                                            No file selected
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] text-gray-400">
+                                    Optional
+                                </span>
+                            </label>
+                            <input id="photo" type="file" accept="image/*" capture="environment" class="hidden" />
+                        </section>
+
+                        <!-- Submit -->
+                        <section class="pt-1">
+                            <button type="submit" id="submitButton"
+                                class="w-full inline-flex items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-md hover:bg-green-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed">
+                                <span id="submitText">Submit Feedback</span>
+                                <svg id="submitSpinner" class="hidden ml-2 h-4 w-4 animate-spin"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                            </button>
+                            <p class="mt-1 text-[10px] text-center text-gray-400">
+                                Works offline for short periods – we'll sync when you're back online.
+                            </p>
+                        </section>
+                    </form>
+                </div>
+
+                <!-- THANK YOU VIEW -->
+                <div id="thankYouView" class="hidden text-center py-6">
+                    <div class="text-4xl mb-2">🎉</div>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-1">
+                        Thank you!
+                    </h2>
+                    <p class="text-sm text-gray-700 mb-3 px-4">
+                        Show this screen at the counter for
+                        <span class="font-semibold text-primary">10% off</span> your next visit.
+                    </p>
+                    <div
+                        class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-slate-900 text-lime-300 font-mono text-lg tracking-[0.25em] mb-2">
+                        <span id="discountCode"></span>
+                    </div>
+                    <p class="text-[11px] text-gray-400 mb-4">
+                        Code is unique each time you submit feedback.
+                    </p>
+                    <button id="anotherFeedbackBtn"
+                        class="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 active:scale-[0.98]">
+                        Submit new feedback
+                    </button>
+                </div>
+
+                <!-- FOOTER -->
+                <p class="mt-4 text-[10px] text-center text-gray-400">
+                    Your feedback helps us improve every day 💛
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =======================
+        // CONFIG
+        // =======================
+        // 1) Google Sheets webhook (Apps Script URL) OR
+        // 2) Any Supabase/HTTP endpoint that accepts JSON POST.
+        const SUBMISSION_ENDPOINT = 'YOUR_WEBHOOK_URL_HERE'; // replace in README step
+
+        // How often (ms) to try flushing queued submissions when online
+        const FLUSH_INTERVAL_MS = 5000;
+        const QUEUE_KEY = 'restaurantFeedbackQueue_v1';
+
+        // =======================
+        // STATE
+        // =======================
+        let submissionQueue = [];
+        let isFlushing = false;
+        let photoDataUrl = null; // base64 image (optional)
+
+        // =======================
+        // HELPERS
+        // =======================
+        function loadQueue() {
+            try {
+                const raw = window.localStorage.getItem(QUEUE_KEY);
+                submissionQueue = raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                submissionQueue = [];
+            }
+        }
+
+        function saveQueue() {
+            window.localStorage.setItem(QUEUE_KEY, JSON.stringify(submissionQueue));
+        }
+
+        function enqueueSubmission(payload) {
+            submissionQueue.push(payload);
+            saveQueue();
+        }
+
+        function showStatus(message, type = 'info') {
+            const banner = document.getElementById('statusBanner');
+            const text = document.getElementById('statusText');
+
+            banner.classList.remove('hidden', 'bg-green-50', 'text-green-700', 'bg-red-50', 'text-red-700', 'bg-yellow-50', 'text-yellow-700');
+            text.textContent = message;
+
+            if (type === 'success') {
+                banner.classList.add('bg-green-50', 'text-green-700');
+            } else if (type === 'error') {
+                banner.classList.add('bg-red-50', 'text-red-700');
+            } else if (type === 'warn') {
+                banner.classList.add('bg-yellow-50', 'text-yellow-700');
+            } else {
+                banner.classList.add('bg-yellow-50', 'text-yellow-700');
+            }
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 5000);
+        }
+
+        function setSubmitLoading(isLoading) {
+            const btn = document.getElementById('submitButton');
+            const text = document.getElementById('submitText');
+            const spinner = document.getElementById('submitSpinner');
+            btn.disabled = isLoading;
+            if (isLoading) {
+                spinner.classList.remove('hidden');
+                text.textContent = 'Sending...';
+            } else {
+                spinner.classList.add('hidden');
+                text.textContent = 'Submit Feedback';
+            }
+        }
+
+        function generateCode() {
+            // random 6-digit code (100000–999999)
+            return String(Math.floor(100000 + Math.random() * 900000));
+        }
+
+        function showThankYou(code) {
+            document.getElementById('discountCode').textContent = code;
+            document.getElementById('formView').classList.add('hidden');
+            document.getElementById('thankYouView').classList.remove('hidden');
+        }
+
+        function showForm() {
+            document.getElementById('thankYouView').classList.add('hidden');
+            document.getElementById('formView').classList.remove('hidden');
+            // reset form
+            document.getElementById('feedbackForm').reset();
+            photoDataUrl = null;
+            document.getElementById('photoFileName').textContent = 'No file selected';
+            resetRatingButtons();
+        }
+
+        function resetRatingButtons() {
+            // Overall
+            document.querySelectorAll('#overallRatingButtons button').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'border-primary');
+                btn.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            });
+            document.getElementById('overallRating').value = '';
+
+            // Quick ratings
+            document.querySelectorAll('[data-row] [data-value]').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'border-primary');
+                btn.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            });
+
+            document.getElementById('foodLabel').textContent = 'Not rated';
+            document.getElementById('serviceLabel').textContent = 'Not rated';
+            document.getElementById('speedLabel').textContent = 'Not rated';
+            document.getElementById('cleanlinessLabel').textContent = 'Not rated';
+
+            document.getElementById('foodRating').value = '';
+            document.getElementById('serviceRating').value = '';
+            document.getElementById('speedRating').value = '';
+            document.getElementById('cleanlinessRating').value = '';
+        }
+
+        function updateLabel(id, value) {
+            const labelEl = document.getElementById(id);
+            if (!value) {
+                labelEl.textContent = 'Not rated';
+                return;
+            }
+            const words = {
+                1: '1 - Poor',
+                2: '2 - Fair',
+                3: '3 - Okay',
+                4: '4 - Good',
+                5: '5 - Excellent',
+            };
+            labelEl.textContent = words[value] || 'Not rated';
+        }
+
+        // =======================
+        // RATING BUTTON SETUP
+        // =======================
+        function createRatingButtons() {
+            const rows = [
+                { key: 'food', targetId: 'foodRating', labelId: 'foodLabel' },
+                { key: 'service', targetId: 'serviceRating', labelId: 'serviceLabel' },
+                { key: 'speed', targetId: 'speedRating', labelId: 'speedLabel' },
+                { key: 'cleanliness', targetId: 'cleanlinessRating', labelId: 'cleanlinessLabel' },
+            ];
+            rows.forEach(row => {
+                const container = document.querySelector(`[data-row="${row.key}"]`);
+                if (!container) return;
+                container.innerHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = i;
+                    btn.dataset.target = row.targetId;
+                    btn.dataset.labelId = row.labelId;
+                    btn.dataset.value = i;
+                    btn.className =
+                        'flex-1 py-1 rounded-lg border text-xs bg-slate-50 border-gray-200 text-gray-700 hover:bg-slate-100 active:scale-95';
+                    container.appendChild(btn);
+                }
+            });
+        }
+
+        function handleOverallClick(e) {
+            const btn = e.target.closest('button[data-target="overallRating"]');
+            if (!btn) return;
+            const value = btn.dataset.value;
+            document.getElementById('overallRating').value = value;
+
+            // Reset
+            document.querySelectorAll('#overallRatingButtons button').forEach(b => {
+                b.classList.remove('bg-primary', 'text-white', 'border-primary');
+                b.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            });
+
+            // Highlight selected
+            btn.classList.add('bg-primary', 'text-white', 'border-primary');
+            btn.classList.remove('bg-slate-50', 'text-gray-700', 'border-gray-200');
+        }
+
+        function handleQuickRatingClick(e) {
+            const btn = e.target.closest('[data-value][data-target]');
+            if (!btn) return;
+            const value = Number(btn.dataset.value);
+            const targetId = btn.dataset.target;
+            const labelId = btn.dataset.labelId;
+
+            // update hidden input
+            document.getElementById(targetId).value = value;
+
+            // highlight row
+            const container = btn.parentElement;
+            container.querySelectorAll('button').forEach(b => {
+                b.classList.remove('bg-primary', 'text-white', 'border-primary');
+                b.classList.add('bg-slate-50', 'text-gray-700', 'border-gray-200');
+            });
+            btn.classList.add('bg-primary', 'text-white', 'border-primary');
+            btn.classList.remove('bg-slate-50', 'text-gray-700', 'border-gray-200');
+
+            // label text
+            if (labelId) updateLabel(labelId, value);
+        }
+
+        // =======================
+        // PHOTO HANDLING
+        // =======================
+        function handlePhotoChange(e) {
+            const file = e.target.files && e.target.files[0];
+            const label = document.getElementById('photoFileName');
+            if (!file) {
+                label.textContent = 'No file selected';
+                photoDataUrl = null;
+                return;
+            }
+            label.textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                // store as data URL; can be large (depends on photo size)
+                photoDataUrl = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // =======================
+        // NETWORK / FLUSH QUEUE
+        // =======================
+        async function flushQueue() {
+            if (isFlushing) return;
+            if (!navigator.onLine) return;
+            if (!SUBMISSION_ENDPOINT || !submissionQueue.length) return;
+
+            isFlushing = true;
+            try {
+                const remaining = [];
+                for (const item of submissionQueue) {
+                    try {
+                        // fire-and-forget; if CORS blocks reading response, we still treat  as success
+                        await fetch(SUBMISSION_ENDPOINT, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(item),
+                        });
+                        // If it throws, we push to remaining
+                    } catch (err) {
+                        remaining.push(item);
+                    }
+                }
+                submissionQueue = remaining;
+                saveQueue();
+                if (!remaining.length) {
+                    showStatus('Queued feedback synced successfully ✅', 'success');
+                }
+            } finally {
+                isFlushing = false;
+            }
+        }
+
+        // =======================
+        // FORM SUBMIT
+        // =======================
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const overallRating = document.getElementById('overallRating').value;
+            if (!overallRating) {
+                showStatus('Please rate your overall experience before submitting.', 'error');
+                return;
+            }
+
+            const payload = {
+                timestamp: new Date().toISOString(),
+                code: generateCode(),
+                overallRating: Number(overallRating),
+                foodRating: Number(document.getElementById('foodRating').value || 0) || null,
+                serviceRating: Number(document.getElementById('serviceRating').value || 0) || null,
+                speedRating: Number(document.getElementById('speedRating').value || 0) || null,
+                cleanlinessRating: Number(document.getElementById('cleanlinessRating').value || 0) || null,
+                comments: document.getElementById('comments').value || '',
+                photoDataUrl: photoDataUrl || null,
+            };
+
+            // Always enqueue first (offline-friendly)
+            enqueueSubmission(payload);
+
+            // UI feedback
+            setSubmitLoading(true);
+
+            const codeForScreen = payload.code;
+
+            if (!navigator.onLine || !SUBMISSION_ENDPOINT) {
+                // offline / endpoint missing -> rely on queue
+                setTimeout(() => {
+                    setSubmitLoading(false);
+                    showStatus('You seem offline. We saved your feedback and will sync when you are online.', 'warn');
+                    showThankYou(codeForScreen);
+                }, 500);
+                return;
+            }
+
+            try {
+                await fetch(SUBMISSION_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+                // if successful, clear from queue (remove one matching instance)
+                submissionQueue.shift();
+                saveQueue();
+                setSubmitLoading(false);
+                showStatus('Feedback sent successfully. Thank you! 🙏', 'success');
+                showThankYou(codeForScreen);
+            } catch (err) {
+                // stay in queue, show offline style message
+                setSubmitLoading(false);
+                showStatus('We could not reach the server. Your feedback is queued and will sync when online.', 'warn');
+                showThankYou(codeForScreen);
+            }
+        }
+
+        // =======================
+        // INIT
+        // =======================
+        function init() {
+            loadQueue();
+            createRatingButtons();
+
+            document
+                .getElementById('overallRatingButtons')
+                .addEventListener('click', handleOverallClick);
+
+            document
+                .querySelectorAll('[data-row]')
+                .forEach(rowEl => {
+                    rowEl.addEventListener('click', handleQuickRatingClick);
+                });
+
+            document
+                .getElementById('photo')
+                .addEventListener('change', handlePhotoChange);
+
+            document
+                .getElementById('feedbackForm')
+                .addEventListener('submit', handleSubmit);
+
+            document
+                .getElementById('anotherFeedbackBtn')
+                .addEventListener('click', showForm);
+
+            window.addEventListener('online', () => {
+                showStatus('Back online. Syncing feedback...', 'info');
+                flushQueue();
+            });
+
+            // Try flushing queue periodically (works for at least 5 minutes offline)
+            setInterval(flushQueue, FLUSH_INTERVAL_MS);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

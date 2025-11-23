@@ -277,12 +277,21 @@
 
         <!-- WELCOME SCREEN -->
         <div class="step-container active" data-step="0">
+            <!-- Logo / Header Area -->
+            <div class="w-full">
+                <h1 class="text-xl font-bold text-primary">Pot of Jollof Kitchen</h1>
+            </div>
+
             <!-- Centered Content -->
             <div class="step-content-wrapper my-auto">
                 <div class="space-y-6">
-                    <h1 class="text-4xl md:text-6xl font-bold text-primary mb-4">Pot of Jollof Kitchen</h1>
-                    <p class="text-xl md:text-2xl text-gray-300">
-                        Thank you for ordering with us! <br>We'd love to hear about your experience.<br>
+                    <h2 class="text-3xl md:text-6xl font-bold text-white leading-tight">
+                        Thank you for ordering with us!
+                    </h2>
+                    <p class="text-lg md:text-2xl text-gray-300">
+                        We'd love to know a bit more about your experience.
+                    </p>
+                    <p class="text-sm text-gray-500 italic">
                         (this form takes 30 seconds to complete)
                     </p>
                 </div>
@@ -306,7 +315,7 @@
             <div class="space-y-8 w-full">
                 <div class="space-y-2">
                     <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 1 <span
-                            class="text-gray-600">/ 5</span></span>
+                            class="text-gray-600">/ 6</span></span>
                     <h2 class="text-2xl md:text-4xl font-bold">How did you order today?</h2>
                 </div>
 
@@ -324,12 +333,43 @@
             </div>
         </div>
 
-        <!-- STEP 2: Overall Rating -->
+        <!-- STEP 2: Customer Details -->
         <div class="step-container" data-step="2">
             <div class="space-y-8 w-full">
                 <div class="space-y-2">
                     <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 2 <span
-                            class="text-gray-600">/ 5</span></span>
+                            class="text-gray-600">/ 6</span></span>
+                    <h2 class="text-2xl md:text-4xl font-bold">Can we get your details?</h2>
+                    <p class="text-gray-400">Optional, but helps us track your order.</p>
+                </div>
+
+                <div class="max-w-2xl space-y-6">
+                    <div>
+                        <label class="block text-sm text-gray-500 mb-2">Customer Name</label>
+                        <input type="text" id="customerName" class="input-underline" placeholder="John Doe"
+                            autocomplete="name">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-500 mb-2">Order ID</label>
+                        <input type="text" id="orderId" class="input-underline" placeholder="#12345" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex items-center gap-4">
+                    <button type="button" onclick="prevStep()" class="nav-btn-secondary">Back</button>
+                    <button type="button" onclick="nextStep()" class="nav-btn">OK ✓</button>
+                    <span class="text-xs text-gray-500 hidden md:inline">Press <span
+                            class="font-bold text-gray-400">Enter ↵</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Overall Rating -->
+        <div class="step-container" data-step="3">
+            <div class="space-y-8 w-full">
+                <div class="space-y-2">
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 3 <span
+                            class="text-gray-600">/ 6</span></span>
                     <h2 class="text-2xl md:text-4xl font-bold">How was your overall experience?</h2>
                 </div>
 
@@ -350,12 +390,12 @@
             </div>
         </div>
 
-        <!-- STEP 3: Detailed Ratings (Optional) -->
-        <div class="step-container" data-step="3">
+        <!-- STEP 4: Detailed Ratings (Optional) -->
+        <div class="step-container" data-step="4">
             <div class="space-y-8 w-full">
                 <div class="space-y-2">
-                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 3 <span
-                            class="text-gray-600">/ 5</span></span>
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 4 <span
+                            class="text-gray-600">/ 6</span></span>
                     <h2 class="text-2xl md:text-4xl font-bold">Quick ratings (Optional)</h2>
                     <p class="text-gray-400">1 = Poor, 5 = Excellent</p>
                 </div>
@@ -388,12 +428,12 @@
             </div>
         </div>
 
-        <!-- STEP 4: Comments -->
-        <div class="step-container" data-step="4">
+        <!-- STEP 5: Comments -->
+        <div class="step-container" data-step="5">
             <div class="space-y-8 w-full">
                 <div class="space-y-2">
-                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 4 <span
-                            class="text-gray-600">/ 5</span></span>
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 5 <span
+                            class="text-gray-600">/ 6</span></span>
                     <h2 class="text-2xl md:text-4xl font-bold">Anything we can improve?</h2>
                 </div>
 
@@ -409,12 +449,12 @@
             </div>
         </div>
 
-        <!-- STEP 5: Photo -->
-        <div class="step-container" data-step="5">
+        <!-- STEP 6: Photo -->
+        <div class="step-container" data-step="6">
             <div class="space-y-8 w-full">
                 <div class="space-y-2">
-                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 5 <span
-                            class="text-gray-600">/ 5</span></span>
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 6 <span
+                            class="text-gray-600">/ 6</span></span>
                     <h2 class="text-2xl md:text-4xl font-bold">Add a photo?</h2>
                     <p class="text-gray-400">Show us what you ordered (Optional)</p>
                 </div>
@@ -437,7 +477,7 @@
         </div>
 
         <!-- THANK YOU -->
-        <div class="step-container" data-step="6" id="thankYouStep">
+        <div class="step-container" data-step="7" id="thankYouStep">
             <div class="space-y-6 text-center w-full">
                 <div class="text-6xl mb-4">🎉</div>
                 <h1 class="text-4xl md:text-5xl font-bold text-primary">Thank You!</h1>
@@ -448,9 +488,17 @@
                     <div class="text-3xl font-mono font-bold text-primary tracking-widest" id="discountCode">...</div>
                 </div>
 
-                <div>
+                <div class="flex flex-col items-center gap-4">
+                    <a href="https://wa.me/254795384140" target="_blank"
+                        class="nav-btn w-full md:w-auto text-center no-underline flex items-center justify-center gap-2">
+                        <span>Order on WhatsApp</span>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-8.683-2.03-.967-.272-.099-.47-.149-.669.198-.198.347-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z" />
+                        </svg>
+                    </a>
                     <button type="button" onclick="location.reload()"
-                        class="nav-btn-secondary border border-gray-700 rounded-lg hover:border-primary">
+                        class="nav-btn-secondary border border-gray-700 rounded-lg hover:border-primary w-full md:w-auto">
                         Submit another response
                     </button>
                 </div>
@@ -474,7 +522,7 @@
         const QUEUE_KEY = "restaurantFeedbackQueue_v1";
 
         let currentStep = 0;
-        const totalSteps = 6; // 0 to 5 (6 is thank you)
+        const totalSteps = 7; // 0 to 6 (7 is thank you)
         let photoDataUrl = null;
         let submissionQueue = [];
 
@@ -546,7 +594,7 @@
 
         function nextStep() {
             if (!validateStep(currentStep)) return;
-            if (currentStep < 6) {
+            if (currentStep < 7) {
                 showStep(currentStep + 1, 'next');
             }
         }
@@ -564,7 +612,8 @@
                     return false;
                 }
             }
-            if (step === 2) {
+            // Step 2 (Customer Details) is optional
+            if (step === 3) { // Was step 2
                 if (!document.getElementById("overallRating").value) {
                     showToast("Please rate your experience", "error");
                     return false;
@@ -583,8 +632,8 @@
                     if (document.activeElement.id === "submitBtn") return;
 
                     e.preventDefault();
-                    if (currentStep < 5) nextStep();
-                    else if (currentStep === 5) submitForm();
+                    if (currentStep < 6) nextStep();
+                    else if (currentStep === 6) submitForm();
                 }
             });
         }
@@ -635,7 +684,7 @@
                 // On mobile, sometimes auto-advance is too jarring or fails if touch event is still processing
                 // We'll still try to auto-advance but ensure the button is there as fallback
                 setTimeout(() => {
-                    if (currentStep === 2) nextStep();
+                    if (currentStep === 3) nextStep(); // Updated to step 3
                 }, 400);
             }
         }
@@ -715,6 +764,8 @@
                 timestamp: new Date().toISOString(),
                 code: generateCode(),
                 serviceType: document.getElementById("serviceType").value,
+                customerName: document.getElementById("customerName").value || "",
+                orderId: document.getElementById("orderId").value || "",
                 overallRating: Number(document.getElementById("overallRating").value),
                 foodRating: getVal("foodRating"),
                 serviceRating: getVal("serviceRating"),
@@ -722,8 +773,6 @@
                 cleanlinessRating: "", // Removed from UI
                 comments: document.getElementById("comments").value || "",
                 photoDataUrl: photoDataUrl,
-                customerName: "", // Not asked in new flow
-                orderId: "" // Not asked in new flow
             };
 
             // Queue it (safety first)
@@ -731,7 +780,7 @@
 
             // Optimistic UI - Show Thank You IMMEDIATELY
             document.getElementById("discountCode").textContent = payload.code;
-            showStep(6, 'next');
+            showStep(7, 'next');
 
             // Send in background (don't await)
             if (navigator.onLine) {

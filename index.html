@@ -1,468 +1,607 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-full bg-black">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Restaurant Feedback</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Pot of Jollof - Feedback</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: { DEFAULT: "#FFD618" } }, // POJ Yellow
+                    colors: {
+                        primary: "#FFD618", // POJ Yellow
+                        dark: "#0a0a0a",
+                        surface: "#1a1a1a",
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
                 },
             },
         };
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .step-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(20px);
+        }
+
+        .step-container.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            position: relative;
+        }
+
+        .step-container.exit-up {
+            opacity: 0;
+            transform: translateY(-50px);
+            position: absolute;
+        }
+
+        .step-container.exit-down {
+            opacity: 0;
+            transform: translateY(50px);
+            position: absolute;
+        }
+
+        .input-underline {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #333;
+            color: #FFD618;
+            font-size: 2rem;
+            width: 100%;
+            padding: 0.5rem 0;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-underline:focus {
+            border-color: #FFD618;
+        }
+
+        .option-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+
+        .option-btn:hover {
+            background: #2a2a2a;
+            border-color: #FFD618;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            background: #FFD618;
+            color: black;
+            border-color: #FFD618;
+            font-weight: 600;
+        }
+
+        .option-key {
+            background: #333;
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .option-btn.selected .option-key {
+            background: black;
+            color: #FFD618;
+        }
+
+        .nav-btn {
+            background: #FFD618;
+            color: black;
+            font-weight: 700;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            transition: transform 0.1s;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+
+        .nav-btn-secondary {
+            background: transparent;
+            color: #666;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: color 0.2s;
+        }
+
+        .nav-btn-secondary:hover {
+            color: white;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: #FFD618;
+            transition: width 0.5s ease;
+            z-index: 50;
+        }
+
+        .rating-box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rating-box:hover {
+            border-color: #FFD618;
+            background: #222;
+        }
+
+        .rating-box.selected {
+            background: #FFD618;
+            color: black;
+            border-color: #FFD618;
+            font-weight: bold;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 640px) {
+            .step-container {
+                padding: 1.5rem;
+                justify-content: flex-start;
+                padding-top: 4rem;
+            }
+
+            .input-underline {
+                font-size: 1.5rem;
+            }
+
+            .option-key {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
-<body class="h-full bg-slate-50">
-    <main class="min-h-screen flex items-center justify-center px-4 py-6">
-        <div class="w-full max-w-md">
-            <div class="bg-white shadow-xl rounded-3xl overflow-hidden">
+<body class="bg-black text-white">
 
-                <!-- Header -->
-                <div class="px-6 pt-6 pb-4 border-b">
-                    <h1 class="text-xl font-semibold text-black-900 text-center">
-                        Pot of Jollof Kitchen
-                    </h1>
-                    <p class="mt-1 text-xs text-black-500 text-center">
-                        We appreciate your feedback 💛
-                    </p>
+    <!-- Progress Bar -->
+    <div id="progressBar" class="progress-bar" style="width: 0%"></div>
 
-                    <!-- Progress -->
-                    <div class="mt-4">
-                        <div class="flex items-center justify-between text-[10px] text-black-400 mb-1">
-                            <span id="stepText">Step 1 of 6</span>
-                            <span id="progressPct">0%</span>
-                        </div>
-                        <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div id="progressBar" class="h-full bg-primary rounded-full transition-all duration-300"
-                                style="width:0%"></div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Main Form -->
+    <form id="feedbackForm" onsubmit="return false;">
 
-                <!-- Status banner -->
-                <div id="statusBanner" class="hidden mx-6 mt-4 text-xs rounded-xl px-3 py-2"></div>
-
-                <!-- Form Flow -->
-                <form id="feedbackForm" class="px-6 py-5">
-
-                    <!-- STEP 1: Service type -->
-                    <!-- STEP 1: Service type -->
-                    <section class="step space-y-4" data-step>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900">How were you served?</h2>
-                            <p class="text-xs text-gray-500">Optional</p>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2" id="serviceTypeButtons">
-                            <button type="button" data-value="Dine-in" class="choice-btn">Dine-in</button>
-                            <button type="button" data-value="Pick-up" class="choice-btn">Pick-up</button>
-                            <button type="button" data-value="UberEats" class="choice-btn">UberEats</button>
-                            <button type="button" data-value="Glovo" class="choice-btn">Glovo</button>
-                            <button type="button" data-value="Bolt Food" class="choice-btn">Bolt Food</button>
-                            <button type="button" data-value="WhatsApp" class="choice-btn">WhatsApp</button>
-                        </div>
-
-                        <input type="hidden" id="serviceType" />
-                    </section>
-
-
-                    <!-- STEP 3: Overall experience -->
-                    <section class="step hidden space-y-4" data-step>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900">Overall experience</h2>
-                            <p class="text-xs text-gray-500">Tap one emoji *</p>
-                        </div>
-                        <div class="flex justify-between gap-2" id="overallRatingButtons">
-                            <button type="button" data-value="1" class="emoji-btn">
-                                😡 <span class="emoji-num">1</span>
-                            </button>
-                            <button type="button" data-value="2" class="emoji-btn">
-                                😕 <span class="emoji-num">2</span>
-                            </button>
-                            <button type="button" data-value="3" class="emoji-btn">
-                                😐 <span class="emoji-num">3</span>
-                            </button>
-                            <button type="button" data-value="4" class="emoji-btn">
-                                🙂 <span class="emoji-num">4</span>
-                            </button>
-                            <button type="button" data-value="5" class="emoji-btn">
-                                🤩 <span class="emoji-num">5</span>
-                            </button>
-                        </div>
-                        <input type="hidden" id="overallRating" />
-                    </section>
-
-                    <!-- STEP 4: Quick ratings -->
-                    <section class="step hidden space-y-4" data-step>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900">Quick ratings</h2>
-                            <p class="text-xs text-gray-500">Optional (1 = Poor, 5 = Great)</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <!-- helper row -->
-                            <div class="rating-row" data-row="food">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-sm font-medium text-gray-800">Food 🌟</span>
-                                    <span id="foodLabel" class="text-[11px] text-gray-400">Not rated</span>
-                                </div>
-                                <div class="flex gap-1"></div>
-                                <input type="hidden" id="foodRating" />
-                            </div>
-
-                            <div class="rating-row" data-row="service">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-sm font-medium text-gray-800">Service 😊</span>
-                                    <span id="serviceLabel" class="text-[11px] text-gray-400">Not rated</span>
-                                </div>
-                                <div class="flex gap-1"></div>
-                                <input type="hidden" id="serviceRating" />
-                            </div>
-
-                            <div class="rating-row" data-row="speed">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-sm font-medium text-gray-800">Speed ⚡</span>
-                                    <span id="speedLabel" class="text-[11px] text-gray-400">Not rated</span>
-                                </div>
-                                <div class="flex gap-1"></div>
-                                <input type="hidden" id="speedRating" />
-                            </div>
-
-                            <div class="rating-row" data-row="cleanliness">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-sm font-medium text-gray-800">Cleanliness 🧹</span>
-                                    <span id="cleanlinessLabel" class="text-[11px] text-gray-400">Not rated</span>
-                                </div>
-                                <div class="flex gap-1"></div>
-                                <input type="hidden" id="cleanlinessRating" />
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- STEP 5: Comments -->
-                    <section class="step hidden space-y-4" data-step>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900">Anything we can improve?</h2>
-                            <p class="text-xs text-gray-500">Optional</p>
-                        </div>
-                        <textarea id="comments" rows="4"
-                            class="w-full rounded-2xl border border-gray-200 bg-slate-50 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                            placeholder="Tell us what you loved or what we can do better..."></textarea>
-                    </section>
-
-                    <!-- STEP 6: Photo -->
-                    <section class="step hidden space-y-4" data-step>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900">Add a photo</h2>
-                            <p class="text-xs text-gray-500">Optional</p>
-                        </div>
-
-                        <label for="photo"
-                            class="flex items-center justify-between gap-3 rounded-2xl border border-dashed border-gray-300 bg-slate-50 px-4 py-3 text-sm text-gray-700 cursor-pointer active:scale-[0.99]">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">📷</span>
-                                <div class="flex flex-col">
-                                    <span class="font-medium">Camera or gallery</span>
-                                    <span id="photoFileName" class="text-[11px] text-gray-400">No file selected</span>
-                                </div>
-                            </div>
-                            <span class="text-xs text-gray-400">Optional</span>
-                        </label>
-                        <input id="photo" type="file" accept="image/*" capture="environment" class="hidden" />
-                    </section>
-
-                    <!-- Navigation -->
-                    <div class="mt-6 flex items-center justify-between gap-3">
-                        <button type="button" id="backBtn"
-                            class="w-1/3 rounded-2xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-40">
-                            Back
-                        </button>
-
-                        <button type="button" id="nextBtn"
-                            class="w-2/3 rounded-2xl bg-gray-900 py-3 text-sm font-semibold text-white shadow-md hover:bg-gray-800 active:scale-[0.99]">
-                            Next
-                        </button>
-
-                        <button type="submit" id="submitBtn"
-                            class="hidden w-2/3 rounded-2xl bg-primary py-3 text-sm font-semibold text-white shadow-md hover:bg-black-700 active:scale-[0.99]">
-                            <span id="submitText">Submit</span>
-                            <svg id="submitSpinner" class="hidden ml-2 h-4 w-4 animate-spin inline"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <p class="mt-2 text-[10px] text-center text-gray-400">
-                        Works offline for short periods – we’ll sync when you’re back online.
-                    </p>
-                </form>
-
-                <!-- THANK YOU VIEW -->
-                <div id="thankYouView" class="hidden px-6 py-10 text-center">
-                    <div class="text-5xl mb-3">🎉</div>
-                    <h2 class="text-xl font-semibold text-gray-900 mb-2">Thank you!</h2>
-                    <p class="text-sm text-gray-700 mb-4">
-                        Show this screen to <span class="font-semibold text-primary">get KSh 300 off</span> your next
-                        order.
-                    </p>
-                    <div
-                        class="inline-flex items-center justify-center px-5 py-3 rounded-2xl bg-slate-900 text-lime-300 font-mono text-xl tracking-[0.3em] mb-2">
-                        <span id="discountCode"></span>
-                    </div>
-                    <p class="text-[11px] text-gray-400 mb-6">
-                        Code is unique each time you submit feedback.
-                    </p>
-                    <button id="anotherFeedbackBtn"
-                        class="inline-flex items-center justify-center rounded-2xl border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                        Submit another feedback
-                    </button>
-                </div>
-
-                <p class="px-6 pb-5 text-[10px] text-center text-gray-400">
-                    Your feedback helps us improve every day 💛
+        <!-- WELCOME SCREEN -->
+        <div class="step-container active" data-step="0">
+            <div class="space-y-6">
+                <h1 class="text-4xl md:text-6xl font-bold text-primary mb-4">Pot of Jollof Kitchen</h1>
+                <p class="text-xl md:text-2xl text-gray-300">
+                    Hello! We'd love to hear about your experience.<br>
+                    It only takes 30 seconds.
                 </p>
+                <div class="pt-8">
+                    <button type="button" onclick="nextStep()" class="nav-btn text-lg px-8 py-4 rounded-lg">
+                        Give Feedback <span class="ml-2">↵</span>
+                    </button>
+                    <div class="mt-4 text-xs text-gray-600 flex items-center gap-1">
+                        <span>press</span> <span class="bg-gray-800 px-1 rounded">Enter ↵</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
+
+        <!-- STEP 1: Service Type -->
+        <div class="step-container" data-step="1">
+            <div class="space-y-8 w-full">
+                <div class="space-y-2">
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 1 <span
+                            class="text-gray-600">/ 5</span></span>
+                    <h2 class="text-2xl md:text-4xl font-bold">How did you order today?</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl" id="serviceTypeOptions">
+                    <!-- Options injected via JS -->
+                </div>
+
+                <input type="hidden" id="serviceType" required>
+
+                <div class="pt-4 flex items-center gap-4">
+                    <button type="button" onclick="nextStep()" class="nav-btn hidden" id="step1Next">OK ✓</button>
+                    <span class="text-xs text-gray-500 hidden md:inline">Press <span
+                            class="font-bold text-gray-400">Enter ↵</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: Overall Rating -->
+        <div class="step-container" data-step="2">
+            <div class="space-y-8 w-full">
+                <div class="space-y-2">
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 2 <span
+                            class="text-gray-600">/ 5</span></span>
+                    <h2 class="text-2xl md:text-4xl font-bold">How was your overall experience?</h2>
+                </div>
+
+                <div class="flex flex-wrap gap-4" id="overallRatingOptions">
+                    <!-- Emojis -->
+                    <button type="button" class="rating-box w-16 h-16 text-2xl" onclick="selectOverall(1)">😡</button>
+                    <button type="button" class="rating-box w-16 h-16 text-2xl" onclick="selectOverall(2)">😕</button>
+                    <button type="button" class="rating-box w-16 h-16 text-2xl" onclick="selectOverall(3)">😐</button>
+                    <button type="button" class="rating-box w-16 h-16 text-2xl" onclick="selectOverall(4)">🙂</button>
+                    <button type="button" class="rating-box w-16 h-16 text-2xl" onclick="selectOverall(5)">🤩</button>
+                </div>
+                <input type="hidden" id="overallRating" required>
+
+                <div class="pt-4 flex items-center gap-4">
+                    <button type="button" onclick="prevStep()" class="nav-btn-secondary">Back</button>
+                    <button type="button" onclick="nextStep()" class="nav-btn hidden" id="step2Next">OK ✓</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Detailed Ratings (Optional) -->
+        <div class="step-container" data-step="3">
+            <div class="space-y-8 w-full">
+                <div class="space-y-2">
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 3 <span
+                            class="text-gray-600">/ 5</span></span>
+                    <h2 class="text-2xl md:text-4xl font-bold">Quick ratings (Optional)</h2>
+                    <p class="text-gray-400">1 = Poor, 5 = Excellent</p>
+                </div>
+
+                <div class="space-y-6 max-w-xl">
+                    <!-- Food -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg w-32">Food</span>
+                        <div class="flex gap-2" id="foodRatingRow"></div>
+                        <input type="hidden" id="foodRating">
+                    </div>
+                    <!-- Service -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg w-32">Service</span>
+                        <div class="flex gap-2" id="serviceRatingRow"></div>
+                        <input type="hidden" id="serviceRating">
+                    </div>
+                    <!-- Speed -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg w-32">Speed</span>
+                        <div class="flex gap-2" id="speedRatingRow"></div>
+                        <input type="hidden" id="speedRating">
+                    </div>
+                </div>
+
+                <div class="pt-8 flex items-center gap-4">
+                    <button type="button" onclick="prevStep()" class="nav-btn-secondary">Back</button>
+                    <button type="button" onclick="nextStep()" class="nav-btn">Next ↵</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: Comments -->
+        <div class="step-container" data-step="4">
+            <div class="space-y-8 w-full">
+                <div class="space-y-2">
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 4 <span
+                            class="text-gray-600">/ 5</span></span>
+                    <h2 class="text-2xl md:text-4xl font-bold">Anything we can improve?</h2>
+                </div>
+
+                <div class="max-w-2xl">
+                    <input type="text" id="comments" class="input-underline" placeholder="Type your answer here..."
+                        autocomplete="off">
+                </div>
+
+                <div class="pt-4 flex items-center gap-4">
+                    <button type="button" onclick="prevStep()" class="nav-btn-secondary">Back</button>
+                    <button type="button" onclick="nextStep()" class="nav-btn">OK ✓</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 5: Photo -->
+        <div class="step-container" data-step="5">
+            <div class="space-y-8 w-full">
+                <div class="space-y-2">
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Question 5 <span
+                            class="text-gray-600">/ 5</span></span>
+                    <h2 class="text-2xl md:text-4xl font-bold">Add a photo?</h2>
+                    <p class="text-gray-400">Show us what you ordered (Optional)</p>
+                </div>
+
+                <div class="max-w-xl">
+                    <label for="photo"
+                        class="block w-full border-2 border-dashed border-gray-700 rounded-lg p-8 text-center hover:border-primary hover:bg-surface cursor-pointer transition-colors">
+                        <div class="text-4xl mb-2">📷</div>
+                        <div class="text-lg font-medium" id="photoLabel">Click to upload</div>
+                        <div class="text-sm text-gray-500 mt-1">or drag and drop</div>
+                    </label>
+                    <input type="file" id="photo" class="hidden" accept="image/*">
+                </div>
+
+                <div class="pt-8 flex items-center gap-4">
+                    <button type="button" onclick="prevStep()" class="nav-btn-secondary">Back</button>
+                    <button type="button" onclick="submitForm()" id="submitBtn" class="nav-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- THANK YOU -->
+        <div class="step-container" data-step="6" id="thankYouStep">
+            <div class="space-y-6 text-center w-full">
+                <div class="text-6xl mb-4">🎉</div>
+                <h1 class="text-4xl md:text-5xl font-bold text-primary">Thank You!</h1>
+                <p class="text-xl text-gray-300">Your feedback helps us improve.</p>
+
+                <div class="my-8 p-6 bg-surface rounded-xl border border-gray-800 inline-block">
+                    <p class="text-sm text-gray-400 mb-2">Show this code for KSh 200 off your next order:</p>
+                    <div class="text-3xl font-mono font-bold text-primary tracking-widest" id="discountCode">...</div>
+                </div>
+
+                <div>
+                    <button type="button" onclick="location.reload()"
+                        class="nav-btn-secondary border border-gray-700 rounded-lg hover:border-primary">
+                        Submit another response
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    <!-- Status Toast -->
+    <div id="toast"
+        class="fixed bottom-6 right-6 bg-surface border border-gray-700 text-white px-6 py-4 rounded-lg shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3">
+        <span id="toastIcon">ℹ️</span>
+        <span id="toastMsg">Message</span>
+    </div>
 
     <script>
         // =======================
-        // CONFIG
+        // CONFIG & STATE
         // =======================
-        const SUBMISSION_ENDPOINT =
-            "https://script.google.com/macros/s/AKfycbz70vQU5bUvyX05suHOQLoxU83UP3RWVDenSJsZZRJDhcTj66kM8ISfU1c0dtO2bmxrig/exec";
-
-        const FLUSH_INTERVAL_MS = 5000;
+        const SUBMISSION_ENDPOINT = "https://script.google.com/macros/s/AKfycbz70vQU5bUvyX05suHOQLoxU83UP3RWVDenSJsZZRJDhcTj66kM8ISfU1c0dtO2bmxrig/exec";
         const QUEUE_KEY = "restaurantFeedbackQueue_v1";
 
-        // =======================
-        // STATE
-        // =======================
-        let submissionQueue = [];
-        let isFlushing = false;
+        let currentStep = 0;
+        const totalSteps = 6; // 0 to 5 (6 is thank you)
         let photoDataUrl = null;
-
-        const steps = [];
-        let stepIndex = 0;
+        let submissionQueue = [];
 
         // =======================
-        // HELPERS
+        // INIT
         // =======================
-        function loadQueue() {
-            try {
-                const raw = localStorage.getItem(QUEUE_KEY);
-                submissionQueue = raw ? JSON.parse(raw) : [];
-            } catch { submissionQueue = []; }
-        }
-        function saveQueue() {
-            localStorage.setItem(QUEUE_KEY, JSON.stringify(submissionQueue));
-        }
-        function enqueueSubmission(payload) {
-            submissionQueue.push(payload);
-            saveQueue();
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            loadQueue();
+            renderServiceOptions();
+            renderDetailedRatings();
+            setupPhoto();
+            setupKeyboardNav();
 
-        function showStatus(message, type = "info") {
-            const banner = document.getElementById("statusBanner");
-            banner.className = "mx-6 mt-4 text-xs rounded-xl px-3 py-2";
-            if (type === "success") banner.classList.add("bg-green-50", "text-green-700");
-            else if (type === "error") banner.classList.add("bg-red-50", "text-red-700");
-            else banner.classList.add("bg-yellow-50", "text-yellow-700");
-            banner.textContent = message;
-            banner.classList.remove("hidden");
-            setTimeout(() => banner.classList.add("hidden"), 4000);
-        }
+            // Auto-flush queue if online
+            if (navigator.onLine) flushQueue();
+            window.addEventListener("online", flushQueue);
+        });
 
-        function setSubmitLoading(isLoading) {
-            const btn = document.getElementById("submitBtn");
-            const text = document.getElementById("submitText");
-            const spinner = document.getElementById("submitSpinner");
-            btn.disabled = isLoading;
-            if (isLoading) {
-                spinner.classList.remove("hidden");
-                text.textContent = "Sending...";
-            } else {
-                spinner.classList.add("hidden");
-                text.textContent = "Submit";
-            }
-        }
-
-        function generateCode() {
-            return String(Math.floor(100000 + Math.random() * 900000));
-        }
-
-        function showThankYou(code) {
-            document.getElementById("discountCode").textContent = code;
-            document.getElementById("feedbackForm").classList.add("hidden");
-            document.getElementById("thankYouView").classList.remove("hidden");
-        }
-
-        function showFormAgain() {
-            document.getElementById("thankYouView").classList.add("hidden");
-            document.getElementById("feedbackForm").classList.remove("hidden");
-            document.getElementById("feedbackForm").reset();
-            photoDataUrl = null;
-            document.getElementById("photoFileName").textContent = "No file selected";
-            resetButtons();
-            stepIndex = 0;
-            renderStep();
-        }
-
-        function resetButtons() {
-            // overall emoji
-            document.querySelectorAll("#overallRatingButtons .emoji-btn").forEach(b => {
-                b.classList.remove("ring-2", "ring-primary", "bg-green-50");
-            });
-            document.getElementById("overallRating").value = "";
-
-            // service type
-            document.querySelectorAll("#serviceTypeButtons .choice-btn").forEach(b => {
-                b.classList.remove("bg-primary", "text-white", "border-primary");
-                b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
-            });
-            document.getElementById("serviceType").value = "";
-
-            // quick ratings
-            document.querySelectorAll(".rating-row .rate-btn").forEach(b => {
-                b.classList.remove("bg-primary", "text-white", "border-primary");
-                b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
-            });
-            ["food", "service", "speed", "cleanliness"].forEach(k => {
-                document.getElementById(k + "Label").textContent = "Not rated";
-                document.getElementById(k + "Rating").value = "";
-            });
-        }
-
+        // =======================
+        // NAVIGATION
+        // =======================
         function updateProgress() {
-            const total = steps.length;
-            const current = stepIndex + 1;
-            const pct = Math.round((current - 1) / (total - 1) * 100);
-
-            document.getElementById("stepText").textContent = `Step ${current} of ${total}`;
-            document.getElementById("progressPct").textContent = `${pct}%`;
+            // Step 0 doesn't count. Steps 1-5 are the form.
+            if (currentStep === 0) {
+                document.getElementById("progressBar").style.width = "0%";
+                return;
+            }
+            if (currentStep >= 6) {
+                document.getElementById("progressBar").style.width = "100%";
+                return;
+            }
+            const pct = ((currentStep) / 5) * 100;
             document.getElementById("progressBar").style.width = `${pct}%`;
+        }
 
-            const backBtn = document.getElementById("backBtn");
-            const nextBtn = document.getElementById("nextBtn");
-            const submitBtn = document.getElementById("submitBtn");
+        function showStep(index, direction = 'next') {
+            const currentEl = document.querySelector(`.step-container[data-step="${currentStep}"]`);
+            const nextEl = document.querySelector(`.step-container[data-step="${index}"]`);
 
-            backBtn.disabled = stepIndex === 0;
+            if (!nextEl) return;
 
-            if (stepIndex === total - 1) {
-                nextBtn.classList.add("hidden");
-                submitBtn.classList.remove("hidden");
-            } else {
-                nextBtn.classList.remove("hidden");
-                submitBtn.classList.add("hidden");
+            // Animate out
+            currentEl.classList.remove("active");
+            currentEl.classList.add(direction === 'next' ? 'exit-up' : 'exit-down');
+
+            // Prepare next
+            nextEl.classList.remove('exit-up', 'exit-down');
+
+            // Small delay to allow CSS transition to start for the exiting element
+            // before bringing in the new one, or just swap classes.
+            // Actually, we need to reset the transform of the next element before adding active
+            // But since we use absolute positioning for non-active, it works out.
+
+            setTimeout(() => {
+                nextEl.classList.add("active");
+                // Focus input if exists
+                const input = nextEl.querySelector("input:not([type='hidden']), textarea");
+                if (input) input.focus();
+            }, 50);
+
+            // Clean up old classes after animation
+            setTimeout(() => {
+                currentEl.classList.remove('exit-up', 'exit-down');
+            }, 500);
+
+            currentStep = index;
+            updateProgress();
+        }
+
+        function nextStep() {
+            if (!validateStep(currentStep)) return;
+            if (currentStep < 6) {
+                showStep(currentStep + 1, 'next');
             }
         }
 
-        function renderStep() {
-            steps.forEach((s, i) => s.classList.toggle("hidden", i !== stepIndex));
-            updateProgress();
-            // focus on input if present
-            const input = steps[stepIndex].querySelector("input, textarea");
-            if (input) setTimeout(() => input.focus(), 150);
+        function prevStep() {
+            if (currentStep > 0) {
+                showStep(currentStep - 1, 'prev');
+            }
         }
 
-        function canMoveNext() {
-            // Only required field is overall rating (step 3)
-            const currentStep = steps[stepIndex];
-            if (currentStep.contains(document.getElementById("overallRating"))) {
-                return !!document.getElementById("overallRating").value;
+        function validateStep(step) {
+            if (step === 1) {
+                if (!document.getElementById("serviceType").value) {
+                    showToast("Please select an option", "error");
+                    return false;
+                }
+            }
+            if (step === 2) {
+                if (!document.getElementById("overallRating").value) {
+                    showToast("Please rate your experience", "error");
+                    return false;
+                }
             }
             return true;
         }
 
-        // =======================
-        // UI HANDLERS
-        // =======================
-        function setupServiceType() {
-            const wrap = document.getElementById("serviceTypeButtons");
+        function setupKeyboardNav() {
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    // Don't trigger if on textarea (allow newlines)
+                    if (document.activeElement.tagName === "TEXTAREA") return;
 
-            wrap.addEventListener("click", (e) => {
-                const btn = e.target.closest("button[data-value]");
-                if (!btn) return;
+                    // If on submit button, let native click handle it
+                    if (document.activeElement.id === "submitBtn") return;
 
-                document.getElementById("serviceType").value = btn.dataset.value;
-
-                // reset all buttons to default
-                wrap.querySelectorAll(".choice-btn").forEach(b => {
-                    b.classList.remove("bg-primary", "text-gray-900", "border-primary", "ring-2", "ring-primary");
-                    b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
-                });
-
-                // highlight selected in yellow
-                btn.classList.add("bg-primary", "text-gray-900", "border-primary", "ring-2", "ring-primary");
-                btn.classList.remove("bg-slate-50", "text-gray-700", "border-gray-200");
-            });
-        }
-
-
-        function setupOverallRating() {
-            const wrap = document.getElementById("overallRatingButtons");
-            wrap.addEventListener("click", (e) => {
-                const btn = e.target.closest("button[data-value]");
-                if (!btn) return;
-
-                const value = btn.dataset.value;
-                document.getElementById("overallRating").value = value;
-
-                wrap.querySelectorAll(".emoji-btn").forEach(b => {
-                    b.classList.remove("ring-2", "ring-primary", "bg-green-50");
-                });
-
-                btn.classList.add("ring-2", "ring-primary", "bg-yellow-50");
-            });
-        }
-
-        function setupQuickRatings() {
-            const rows = [
-                { key: "food", target: "foodRating", label: "foodLabel" },
-                { key: "service", target: "serviceRating", label: "serviceLabel" },
-                { key: "speed", target: "speedRating", label: "speedLabel" },
-                { key: "cleanliness", target: "cleanlinessRating", label: "cleanlinessLabel" }
-            ];
-
-            rows.forEach(r => {
-                const rowEl = document.querySelector(`.rating-row[data-row="${r.key}"] > div.flex.gap-1`);
-                rowEl.innerHTML = "";
-                for (let i = 1; i <= 5; i++) {
-                    const b = document.createElement("button");
-                    b.type = "button";
-                    b.textContent = i;
-                    b.className = "rate-btn flex-1 py-2 rounded-xl border text-sm bg-slate-50 border-gray-200 text-black-700 hover:bg-slate-100 active:scale-95";
-                    b.dataset.value = i;
-                    rowEl.appendChild(b);
+                    e.preventDefault();
+                    if (currentStep < 5) nextStep();
+                    else if (currentStep === 5) submitForm();
                 }
+            });
+        }
 
-                rowEl.addEventListener("click", (e) => {
-                    const btn = e.target.closest("button[data-value]");
-                    if (!btn) return;
-                    const val = Number(btn.dataset.value);
-                    document.getElementById(r.target).value = val;
+        // =======================
+        // UI RENDERING
+        // =======================
+        function renderServiceOptions() {
+            const options = ["Dine-in", "Pick-up", "UberEats", "Glovo", "Bolt Food", "WhatsApp"];
+            const container = document.getElementById("serviceTypeOptions");
+            const letters = "ABCDEF";
 
-                    rowEl.querySelectorAll("button").forEach(x => {
-                        x.classList.remove("bg-primary", "text-white", "border-primary");
-                        x.classList.add("bg-slate-50", "text-black-700", "border-black-200");
-                    });
+            options.forEach((opt, i) => {
+                const btn = document.createElement("div");
+                btn.className = "option-btn";
+                btn.onclick = () => selectService(opt, btn);
+                btn.innerHTML = `
+                    <span class="option-key">${letters[i] || ''}</span>
+                    <span class="text-lg">${opt}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
 
-                    btn.classList.add("bg-primary", "text-white", "border-primary");
-                    btn.classList.remove("bg-slate-50", "text-black-700", "border-black-200");
+        function selectService(value, btnElement) {
+            document.getElementById("serviceType").value = value;
+            // Visual selection
+            document.querySelectorAll("#serviceTypeOptions .option-btn").forEach(b => b.classList.remove("selected"));
+            btnElement.classList.add("selected");
 
-                    const words = { 1: "1 - Poor", 2: "2 - Fair", 3: "3 - Okay", 4: "4 - Good", 5: "5 - Excellent" };
-                    document.getElementById(r.label).textContent = words[val];
-                });
+            // Show next button or auto-advance
+            document.getElementById("step1Next").classList.remove("hidden");
+            setTimeout(nextStep, 400); // Auto-advance for smooth feel
+        }
+
+        function selectOverall(val) {
+            document.getElementById("overallRating").value = val;
+            const btns = document.querySelectorAll("#overallRatingOptions .rating-box");
+            btns.forEach((b, i) => {
+                if (i + 1 == val) b.classList.add("selected");
+                else b.classList.remove("selected");
+            });
+            document.getElementById("step2Next").classList.remove("hidden");
+            setTimeout(nextStep, 400);
+        }
+
+        function renderDetailedRatings() {
+            const categories = ["food", "service", "speed"];
+            categories.forEach(cat => {
+                const container = document.getElementById(cat + "RatingRow");
+                if (!container) return;
+                for (let i = 1; i <= 5; i++) {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "rating-box w-8 h-8 text-sm";
+                    btn.textContent = i;
+                    btn.onclick = () => {
+                        document.getElementById(cat + "Rating").value = i;
+                        // clear siblings
+                        container.querySelectorAll(".rating-box").forEach(b => b.classList.remove("selected"));
+                        btn.classList.add("selected");
+                    };
+                    container.appendChild(btn);
+                }
             });
         }
 
@@ -470,9 +609,9 @@
             const input = document.getElementById("photo");
             input.addEventListener("change", (e) => {
                 const file = e.target.files && e.target.files[0];
-                const label = document.getElementById("photoFileName");
-                if (!file) { label.textContent = "No file selected"; photoDataUrl = null; return; }
-                label.textContent = file.name;
+                if (!file) return;
+
+                document.getElementById("photoLabel").textContent = file.name;
 
                 const reader = new FileReader();
                 reader.onload = ev => photoDataUrl = ev.target.result;
@@ -480,148 +619,131 @@
             });
         }
 
-        // =======================
-        // NETWORK / QUEUE
-        // =======================
-        async function flushQueue() {
-            if (isFlushing) return;
-            if (!navigator.onLine) return;
-            if (!SUBMISSION_ENDPOINT || !submissionQueue.length) return;
+        function showToast(msg, type = "info") {
+            const toast = document.getElementById("toast");
+            const icon = document.getElementById("toastIcon");
+            const text = document.getElementById("toastMsg");
 
-            isFlushing = true;
-            try {
-                const remaining = [];
-                for (const item of submissionQueue) {
-                    try {
-                        await fetch(SUBMISSION_ENDPOINT, {
-                            method: "POST",
-                            mode: "no-cors",
-                            body: JSON.stringify(item),
-                        });
-                    } catch {
-                        remaining.push(item);
-                    }
-                }
-                submissionQueue = remaining;
-                saveQueue();
-                if (!remaining.length) showStatus("Queued feedback synced ✅", "success");
-            } finally {
-                isFlushing = false;
-            }
+            text.textContent = msg;
+            icon.textContent = type === "error" ? "⚠️" : (type === "success" ? "✅" : "ℹ️");
+
+            toast.classList.remove("translate-y-20", "opacity-0");
+            setTimeout(() => {
+                toast.classList.add("translate-y-20", "opacity-0");
+            }, 3000);
         }
 
         // =======================
-        // SUBMIT
+        // SUBMISSION LOGIC
         // =======================
-        async function handleSubmit(e) {
-            e.preventDefault();
+        function generateCode() {
+            return String(Math.floor(100000 + Math.random() * 900000));
+        }
 
-            const overall = document.getElementById("overallRating").value;
-            if (!overall) {
-                showStatus("Please rate your overall experience first.", "error");
-                // jump user to required step
-                stepIndex = 2;
-                renderStep();
-                return;
-            }
+        async function submitForm() {
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Sending...";
+
+            const getVal = (id) => {
+                const el = document.getElementById(id);
+                return el ? (Number(el.value) || 0) : "";
+            };
 
             const payload = {
                 timestamp: new Date().toISOString(),
                 code: generateCode(),
-                serviceType: document.getElementById("serviceType").value || "",
-                customerName: document.getElementById("customerName").value || "",
-                orderId: document.getElementById("orderId").value || "",
-                overallRating: Number(overall),
-                foodRating: Number(document.getElementById("foodRating").value || 0) || null,
-                serviceRating: Number(document.getElementById("serviceRating").value || 0) || null,
-                speedRating: Number(document.getElementById("speedRating").value || 0) || null,
-                cleanlinessRating: Number(document.getElementById("cleanlinessRating").value || 0) || null,
+                serviceType: document.getElementById("serviceType").value,
+                overallRating: Number(document.getElementById("overallRating").value),
+                foodRating: getVal("foodRating"),
+                serviceRating: getVal("serviceRating"),
+                speedRating: getVal("speedRating"),
+                cleanlinessRating: "", // Removed from UI
                 comments: document.getElementById("comments").value || "",
-                photoDataUrl: photoDataUrl || null,
+                photoDataUrl: photoDataUrl,
+                customerName: "", // Not asked in new flow
+                orderId: "" // Not asked in new flow
             };
 
+            // Queue it
             enqueueSubmission(payload);
-            setSubmitLoading(true);
 
-            const codeForScreen = payload.code;
+            // Optimistic UI
+            document.getElementById("discountCode").textContent = payload.code;
 
+            // Try network
             try {
-                if (navigator.onLine && SUBMISSION_ENDPOINT) {
+                if (navigator.onLine) {
                     await fetch(SUBMISSION_ENDPOINT, {
                         method: "POST",
                         mode: "no-cors",
                         body: JSON.stringify(payload),
                     });
-                    submissionQueue.shift();
-                    saveQueue();
-                    showStatus("Feedback sent. Thank you! 🙏", "success");
+                    // If no error thrown, assume success (no-cors limitation)
+                    removeFromQueue(payload);
+                    showToast("Feedback sent successfully!", "success");
                 } else {
-                    showStatus("Offline: saved & will sync soon.", "warn");
+                    showToast("Saved offline. Will sync later.", "info");
                 }
-            } catch {
-                showStatus("Could not reach server. Saved & will sync.", "warn");
-            } finally {
-                setSubmitLoading(false);
-                showThankYou(codeForScreen);
+            } catch (e) {
+                console.error(e);
+                showToast("Network error. Saved offline.", "info");
             }
+
+            // Show Thank You
+            showStep(6, 'next');
         }
 
         // =======================
-        // INIT
+        // QUEUE HELPERS
         // =======================
-        function init() {
-            loadQueue();
+        function loadQueue() {
+            try {
+                const raw = localStorage.getItem(QUEUE_KEY);
+                submissionQueue = raw ? JSON.parse(raw) : [];
+            } catch { submissionQueue = []; }
+        }
 
-            document.querySelectorAll("[data-step]").forEach(s => steps.push(s));
-            renderStep();
+        function saveQueue() {
+            localStorage.setItem(QUEUE_KEY, JSON.stringify(submissionQueue));
+        }
 
-            // button styles
-            document.querySelectorAll(".choice-btn").forEach(b => {
-                b.className = "choice-btn px-3 py-3 rounded-2xl border bg-slate-50 text-sm font-semibold text-gray-700 hover:bg-yellow-50 active:scale-95";
+        function enqueueSubmission(item) {
+            submissionQueue.push(item);
+            saveQueue();
+        }
 
-            });
-            document.querySelectorAll(".emoji-btn").forEach(b => {
-                b.classList.add("emoji-btn", "flex-1", "py-4", "rounded-2xl", "border", "bg-slate-50", "text-3xl", "flex", "flex-col", "items-center", "justify-center", "hover:bg-slate-100", "active:scale-95");
-            });
-            document.querySelectorAll(".emoji-num").forEach(x => {
-                x.className = "emoji-num mt-1 text-[10px] text-black-500";
-            });
+        function removeFromQueue(item) {
+            // Remove by matching timestamp and code
+            submissionQueue = submissionQueue.filter(x => x.code !== item.code);
+            saveQueue();
+        }
 
-            setupServiceType();
-            setupOverallRating();
-            setupQuickRatings();
-            setupPhoto();
+        async function flushQueue() {
+            if (!submissionQueue.length) return;
 
-            document.getElementById("backBtn").addEventListener("click", () => {
-                if (stepIndex > 0) { stepIndex--; renderStep(); }
-            });
-
-            document.getElementById("nextBtn").addEventListener("click", () => {
-                if (!canMoveNext()) {
-                    showStatus("Please pick an overall rating to continue.", "error");
-                    return;
+            const remaining = [];
+            for (const item of submissionQueue) {
+                try {
+                    await fetch(SUBMISSION_ENDPOINT, {
+                        method: "POST",
+                        mode: "no-cors",
+                        body: JSON.stringify(item),
+                    });
+                } catch {
+                    remaining.push(item);
                 }
-                if (stepIndex < steps.length - 1) { stepIndex++; renderStep(); }
-            });
+            }
 
-            document.getElementById("feedbackForm").addEventListener("submit", handleSubmit);
-            document.getElementById("anotherFeedbackBtn").addEventListener("click", showFormAgain);
+            if (remaining.length < submissionQueue.length) {
+                showToast("Synced offline feedback!", "success");
+            }
 
-            window.addEventListener("online", flushQueue);
-            setInterval(flushQueue, FLUSH_INTERVAL_MS);
+            submissionQueue = remaining;
+            saveQueue();
         }
 
-        document.addEventListener("DOMContentLoaded", init);
     </script>
-
-    <style>
-        /* tiny custom helpers (still Tailwind-first) */
-        .choice-btn.selected {
-            border-color: #FFD618;
-            background: #16a34a;
-            color: white;
-        }
-    </style>
 </body>
 
 </html>

@@ -52,6 +52,8 @@
 
         .step-container {
             min-height: 100vh;
+            /* Mobile viewport fix */
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -66,6 +68,9 @@
             right: 0;
             transition: opacity 0.5s ease, transform 0.5s ease;
             transform: translateY(20px);
+            /* Ensure content is scrollable on small screens if it overflows */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .step-container.active {
@@ -73,6 +78,8 @@
             pointer-events: auto;
             transform: translateY(0);
             position: relative;
+            /* Reset absolute positioning to allow document flow */
+            height: auto;
         }
 
         .step-container.exit-up {
@@ -580,8 +587,17 @@
                 if (i + 1 == val) b.classList.add("selected");
                 else b.classList.remove("selected");
             });
-            document.getElementById("step2Next").classList.remove("hidden");
-            setTimeout(nextStep, 400);
+
+            // Show next button immediately
+            const nextBtn = document.getElementById("step2Next");
+            if (nextBtn) {
+                nextBtn.classList.remove("hidden");
+                // On mobile, sometimes auto-advance is too jarring or fails if touch event is still processing
+                // We'll still try to auto-advance but ensure the button is there as fallback
+                setTimeout(() => {
+                    if (currentStep === 2) nextStep();
+                }, 400);
+            }
         }
 
         function renderDetailedRatings() {
@@ -589,12 +605,16 @@
             categories.forEach(cat => {
                 const container = document.getElementById(cat + "RatingRow");
                 if (!container) return;
+                // Clear existing
+                container.innerHTML = "";
                 for (let i = 1; i <= 5; i++) {
                     const btn = document.createElement("button");
                     btn.type = "button";
                     btn.className = "rating-box w-8 h-8 text-sm";
                     btn.textContent = i;
-                    btn.onclick = () => {
+                    // Use touchstart for faster mobile response, but prevent ghost clicks
+                    btn.onclick = (e) => {
+                        e.preventDefault(); // prevent double firing if touch+click
                         document.getElementById(cat + "Rating").value = i;
                         // clear siblings
                         container.querySelectorAll(".rating-box").forEach(b => b.classList.remove("selected"));
@@ -642,6 +662,7 @@
 
         async function submitForm() {
             const submitBtn = document.getElementById("submitBtn");
+            // Visual feedback on button (though we switch screens immediately)
             submitBtn.disabled = true;
             submitBtn.textContent = "Sending...";
 
@@ -665,33 +686,29 @@
                 orderId: "" // Not asked in new flow
             };
 
-            // Queue it
+            // Queue it (safety first)
             enqueueSubmission(payload);
 
-            // Optimistic UI
+            // Optimistic UI - Show Thank You IMMEDIATELY
             document.getElementById("discountCode").textContent = payload.code;
-
-            // Try network
-            try {
-                if (navigator.onLine) {
-                    await fetch(SUBMISSION_ENDPOINT, {
-                        method: "POST",
-                        mode: "no-cors",
-                        body: JSON.stringify(payload),
-                    });
-                    // If no error thrown, assume success (no-cors limitation)
-                    removeFromQueue(payload);
-                    showToast("Feedback sent successfully!", "success");
-                } else {
-                    showToast("Saved offline. Will sync later.", "info");
-                }
-            } catch (e) {
-                console.error(e);
-                showToast("Network error. Saved offline.", "info");
-            }
-
-            // Show Thank You
             showStep(6, 'next');
+
+            // Send in background (don't await)
+            if (navigator.onLine) {
+                fetch(SUBMISSION_ENDPOINT, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: JSON.stringify(payload),
+                })
+                    .then(() => {
+                        // Success (assumed via no-cors)
+                        removeFromQueue(payload);
+                        console.log("Feedback synced successfully");
+                    })
+                    .catch((e) => {
+                        console.error("Background sync failed, keeping in queue", e);
+                    });
+            }
         }
 
         // =======================

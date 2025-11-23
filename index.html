@@ -56,6 +56,7 @@
             min-height: 100dvh;
             display: flex;
             flex-direction: column;
+            /* Default to center for desktop */
             justify-content: center;
             padding: 2rem;
             max-width: 800px;
@@ -68,9 +69,41 @@
             right: 0;
             transition: opacity 0.5s ease, transform 0.5s ease;
             transform: translateY(20px);
-            /* Ensure content is scrollable on small screens if it overflows */
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+        }
+
+        /* Mobile specific layout adjustments */
+        @media (max-width: 640px) {
+            .step-container {
+                justify-content: space-between;
+                /* Push content apart */
+                padding: 1.5rem;
+                padding-top: 1.5rem;
+                padding-bottom: 2rem;
+            }
+
+            /* Ensure content is centered vertically in the middle space */
+            .step-content-wrapper {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            /* Fix button at bottom area */
+            .step-action-wrapper {
+                margin-top: auto;
+                width: 100%;
+            }
+
+            .nav-btn {
+                width: 100%;
+                /* Full width button on mobile */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
 
         .step-container.active {
@@ -218,9 +251,9 @@
         /* Mobile adjustments */
         @media (max-width: 640px) {
             .step-container {
-                padding: 1.5rem;
-                justify-content: flex-start;
-                padding-top: 4rem;
+                /* padding: 1.5rem; */
+                /* justify-content: flex-start; */
+                /* padding-top: 4rem; */
             }
 
             .input-underline {
@@ -244,19 +277,35 @@
 
         <!-- WELCOME SCREEN -->
         <div class="step-container active" data-step="0">
-            <div class="space-y-6">
-                <h1 class="text-4xl md:text-6xl font-bold text-primary mb-4">Pot of Jollof Kitchen</h1>
-                <p class="text-xl md:text-2xl text-gray-300">
-                    Hello! We'd love to hear about your experience.<br>
-                    It only takes 30 seconds.
-                </p>
-                <div class="pt-8">
-                    <button type="button" onclick="nextStep()" class="nav-btn text-lg px-8 py-4 rounded-lg">
-                        Give Feedback <span class="ml-2">↵</span>
-                    </button>
-                    <div class="mt-4 text-xs text-gray-600 flex items-center gap-1">
-                        <span>press</span> <span class="bg-gray-800 px-1 rounded">Enter ↵</span>
-                    </div>
+            <!-- Logo / Header Area -->
+            <div class="w-full">
+                <h1 class="text-xl font-bold text-primary">Pot of Jollof Kitchen</h1>
+            </div>
+
+            <!-- Centered Content -->
+            <div class="step-content-wrapper my-auto">
+                <div class="space-y-6">
+                    <h2 class="text-3xl md:text-6xl font-bold text-white leading-tight">
+                        Thank you for ordering with us!
+                    </h2>
+                    <p class="text-lg md:text-2xl text-gray-300">
+                        We'd love to know a bit more about your experience.
+                    </p>
+                    <p class="text-sm text-gray-500 italic">
+                        (this form takes 30 seconds to complete)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bottom Action -->
+            <div class="step-action-wrapper pt-8">
+                <button type="button" onclick="nextStep()"
+                    class="nav-btn text-lg px-8 py-4 rounded-lg w-full md:w-auto">
+                    Give Feedback
+                </button>
+                <div
+                    class="mt-4 text-xs text-gray-600 hidden md:flex items-center gap-1 justify-center md:justify-start">
+                    <span>press</span> <span class="bg-gray-800 px-1 rounded">Enter ↵</span>
                 </div>
             </div>
         </div>

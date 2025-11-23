@@ -11,7 +11,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: { DEFAULT: "#16a34a" } },
+                    colors: { primary: { DEFAULT: "#FFD618" } }, // POJ Yellow
                 },
             },
         };
@@ -25,16 +25,16 @@
 
                 <!-- Header -->
                 <div class="px-6 pt-6 pb-4 border-b">
-                    <h1 class="text-xl font-semibold text-gray-900 text-center">
+                    <h1 class="text-xl font-semibold text-black-900 text-center">
                         Pot of Jollof Kitchen
                     </h1>
-                    <p class="mt-1 text-xs text-gray-500 text-center">
+                    <p class="mt-1 text-xs text-black-500 text-center">
                         We appreciate your feedback 💛
                     </p>
 
                     <!-- Progress -->
                     <div class="mt-4">
-                        <div class="flex items-center justify-between text-[10px] text-gray-400 mb-1">
+                        <div class="flex items-center justify-between text-[10px] text-black-400 mb-1">
                             <span id="stepText">Step 1 of 6</span>
                             <span id="progressPct">0%</span>
                         </div>
@@ -52,41 +52,25 @@
                 <form id="feedbackForm" class="px-6 py-5">
 
                     <!-- STEP 1: Service type -->
+                    <!-- STEP 1: Service type -->
                     <section class="step space-y-4" data-step>
                         <div>
                             <h2 class="text-lg font-semibold text-gray-900">How were you served?</h2>
                             <p class="text-xs text-gray-500">Optional</p>
                         </div>
+
                         <div class="grid grid-cols-2 gap-2" id="serviceTypeButtons">
-                            <button type="button" data-value="Dine-in" class="choice-btn">🍽️ Dine-in</button>
-                            <button type="button" data-value="Pick-up" class="choice-btn">🛍️ Pick-up</button>
-                            <button type="button" data-value="UberEats" class="choice-btn">🚗 UberEats</button>
-                            <button type="button" data-value="Glovo" class="choice-btn">🟡 Glovo</button>
-                            <button type="button" data-value="Bolt Food" class="choice-btn col-span-2">⚡ Bolt
-                                Food</button>
+                            <button type="button" data-value="Dine-in" class="choice-btn">Dine-in</button>
+                            <button type="button" data-value="Pick-up" class="choice-btn">Pick-up</button>
+                            <button type="button" data-value="UberEats" class="choice-btn">UberEats</button>
+                            <button type="button" data-value="Glovo" class="choice-btn">Glovo</button>
+                            <button type="button" data-value="Bolt Food" class="choice-btn">Bolt Food</button>
+                            <button type="button" data-value="WhatsApp" class="choice-btn">WhatsApp</button>
                         </div>
+
                         <input type="hidden" id="serviceType" />
                     </section>
 
-                    <!-- STEP 2: Customer name + Order ID -->
-                    <section class="step hidden space-y-4" data-step>
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900">Your details</h2>
-                            <p class="text-xs text-gray-500">Optional</p>
-                        </div>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="text-sm font-medium text-gray-800">Customer name</label>
-                                <input id="customerName" type="text" placeholder="e.g., Michael"
-                                    class="mt-1 w-full rounded-2xl border border-gray-200 bg-slate-50 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-gray-800">Order ID</label>
-                                <input id="orderId" type="text" placeholder="If delivery / online order"
-                                    class="mt-1 w-full rounded-2xl border border-gray-200 bg-slate-50 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                            </div>
-                        </div>
-                    </section>
 
                     <!-- STEP 3: Overall experience -->
                     <section class="step hidden space-y-4" data-step>
@@ -405,21 +389,25 @@
         // =======================
         function setupServiceType() {
             const wrap = document.getElementById("serviceTypeButtons");
+
             wrap.addEventListener("click", (e) => {
                 const btn = e.target.closest("button[data-value]");
                 if (!btn) return;
 
                 document.getElementById("serviceType").value = btn.dataset.value;
 
+                // reset all buttons to default
                 wrap.querySelectorAll(".choice-btn").forEach(b => {
-                    b.classList.remove("bg-primary", "text-white", "border-primary");
+                    b.classList.remove("bg-primary", "text-gray-900", "border-primary", "ring-2", "ring-primary");
                     b.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
                 });
 
-                btn.classList.add("bg-primary", "text-white", "border-primary");
+                // highlight selected in yellow
+                btn.classList.add("bg-primary", "text-gray-900", "border-primary", "ring-2", "ring-primary");
                 btn.classList.remove("bg-slate-50", "text-gray-700", "border-gray-200");
             });
         }
+
 
         function setupOverallRating() {
             const wrap = document.getElementById("overallRatingButtons");
@@ -453,7 +441,7 @@
                     const b = document.createElement("button");
                     b.type = "button";
                     b.textContent = i;
-                    b.className = "rate-btn flex-1 py-2 rounded-xl border text-sm bg-slate-50 border-gray-200 text-gray-700 hover:bg-slate-100 active:scale-95";
+                    b.className = "rate-btn flex-1 py-2 rounded-xl border text-sm bg-slate-50 border-gray-200 text-black-700 hover:bg-slate-100 active:scale-95";
                     b.dataset.value = i;
                     rowEl.appendChild(b);
                 }
@@ -466,11 +454,11 @@
 
                     rowEl.querySelectorAll("button").forEach(x => {
                         x.classList.remove("bg-primary", "text-white", "border-primary");
-                        x.classList.add("bg-slate-50", "text-gray-700", "border-gray-200");
+                        x.classList.add("bg-slate-50", "text-black-700", "border-black-200");
                     });
 
                     btn.classList.add("bg-primary", "text-white", "border-primary");
-                    btn.classList.remove("bg-slate-50", "text-gray-700", "border-gray-200");
+                    btn.classList.remove("bg-slate-50", "text-black-700", "border-black-200");
 
                     const words = { 1: "1 - Poor", 2: "2 - Fair", 3: "3 - Okay", 4: "4 - Good", 5: "5 - Excellent" };
                     document.getElementById(r.label).textContent = words[val];
@@ -589,13 +577,14 @@
 
             // button styles
             document.querySelectorAll(".choice-btn").forEach(b => {
-                b.className = "choice-btn px-3 py-3 rounded-2xl border bg-slate-50 text-sm font-semibold text-gray-700 hover:bg-slate-100 active:scale-95";
+                b.className = "choice-btn px-3 py-3 rounded-2xl border bg-slate-50 text-sm font-semibold text-gray-700 hover:bg-yellow-50 active:scale-95";
+
             });
             document.querySelectorAll(".emoji-btn").forEach(b => {
                 b.classList.add("emoji-btn", "flex-1", "py-4", "rounded-2xl", "border", "bg-slate-50", "text-3xl", "flex", "flex-col", "items-center", "justify-center", "hover:bg-slate-100", "active:scale-95");
             });
             document.querySelectorAll(".emoji-num").forEach(x => {
-                x.className = "emoji-num mt-1 text-[10px] text-gray-500";
+                x.className = "emoji-num mt-1 text-[10px] text-black-500";
             });
 
             setupServiceType();

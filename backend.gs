@@ -16,20 +16,21 @@
  * 6. Copy the Web App URL and paste it into index.html as SUBMISSION_ENDPOINT.
  */
 
-const SHEET_NAME = "Feedback";
-const FOLDER_NAME = "Feedback_Images";
+const POJ_FEEDBACK_SHEET_NAME = "Feedback";
+const POJ_FEEDBACK_FOLDER_NAME = "Feedback_Images";
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
   lock.tryLock(10000);
 
   try {
-    const doc = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = doc.getSheetByName(SHEET_NAME);
+    // OPEN BY ID to ensure we hit the right sheet
+    const doc = SpreadsheetApp.openById("1oCo-B7vc4FOI7w3qykNLN6Z1Z5X0ag7MIY3_Y40K2UU");
+    let sheet = doc.getSheetByName(POJ_FEEDBACK_SHEET_NAME);
 
     // Create sheet if it doesn't exist
     if (!sheet) {
-      sheet = doc.insertSheet(SHEET_NAME);
+      sheet = doc.insertSheet(POJ_FEEDBACK_SHEET_NAME);
       const headers = [
         "Timestamp", 
         "Code", 
@@ -53,7 +54,7 @@ function doPost(e) {
     // Handle Image Upload
     if (data.photoDataUrl) {
       try {
-        const folder = getOrCreateFolder(FOLDER_NAME);
+        const folder = getOrCreateFolder(POJ_FEEDBACK_FOLDER_NAME);
         const contentType = data.photoDataUrl.substring(5, data.photoDataUrl.indexOf(';'));
         const base64Data = data.photoDataUrl.substring(data.photoDataUrl.indexOf(',') + 1);
         const blob = Utilities.newBlob(Utilities.base64Decode(base64Data), contentType, "feedback_" + data.code + ".jpg");
@@ -106,10 +107,10 @@ function getOrCreateFolder(folderName) {
 }
 
 function setup() {
-  const doc = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = doc.getSheetByName(SHEET_NAME);
+  const doc = SpreadsheetApp.openById("1oCo-B7vc4FOI7w3qykNLN6Z1Z5X0ag7MIY3_Y40K2UU");
+  let sheet = doc.getSheetByName(POJ_FEEDBACK_SHEET_NAME);
   if (!sheet) {
-    sheet = doc.insertSheet(SHEET_NAME);
+    sheet = doc.insertSheet(POJ_FEEDBACK_SHEET_NAME);
     const headers = [
         "Timestamp", 
         "Code", 

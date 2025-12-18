@@ -400,25 +400,8 @@
                     <p class="text-gray-400">1 = Poor, 5 = Excellent</p>
                 </div>
 
-                <div class="space-y-6 max-w-xl">
-                    <!-- Food -->
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg w-32">Food</span>
-                        <div class="flex gap-2" id="foodRatingRow"></div>
-                        <input type="hidden" id="foodRating">
-                    </div>
-                    <!-- Service -->
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg w-32">Service</span>
-                        <div class="flex gap-2" id="serviceRatingRow"></div>
-                        <input type="hidden" id="serviceRating">
-                    </div>
-                    <!-- Speed -->
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg w-32">Speed</span>
-                        <div class="flex gap-2" id="speedRatingRow"></div>
-                        <input type="hidden" id="speedRating">
-                    </div>
+                <div class="space-y-6 max-w-xl" id="detailedRatingsContainer">
+                    <!-- Dynamic ratings injected here -->
                 </div>
 
                 <div class="pt-8 flex items-center gap-4">
@@ -541,7 +524,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadQueue();
             renderServiceOptions();
-            renderDetailedRatings();
+            renderDetailedRatings(["food", "service", "ambiance", "value"]); // Default view
             setupPhoto();
             setupKeyboardNav();
 
@@ -673,6 +656,13 @@
             document.querySelectorAll("#serviceTypeOptions .option-btn").forEach(b => b.classList.remove("selected"));
             btnElement.classList.add("selected");
 
+            // Dynamic questions
+            if (value === "Dine-in") {
+                renderDetailedRatings(["food", "service", "ambiance", "value"]);
+            } else {
+                renderDetailedRatings(["food", "service", "speed", "value"]);
+            }
+
             // Show next button or auto-advance
             document.getElementById("step1Next").classList.remove("hidden");
             setTimeout(nextStep, 400); // Auto-advance for smooth feel
@@ -698,27 +688,42 @@
             }
         }
 
-        function renderDetailedRatings() {
-            const categories = ["food", "service", "speed"];
+        function renderDetailedRatings(categories = ["food", "service", "speed"]) {
+            const container = document.getElementById("detailedRatingsContainer");
+            container.innerHTML = ""; // specific container for dynamic injection
+
+            const labels = {
+                "food": "Food",
+                "service": "Service",
+                "speed": "Speed",
+                "ambiance": "Ambiance",
+                "value": "Value for Money"
+            };
+
             categories.forEach(cat => {
-                const container = document.getElementById(cat + "RatingRow");
-                if (!container) return;
-                // Clear existing
-                container.innerHTML = "";
+                const row = document.createElement("div");
+                row.className = "flex items-center justify-between";
+                row.innerHTML = `
+                    <span class="text-lg w-32">${labels[cat]}</span>
+                    <div class="flex gap-2" id="${cat}RatingRow"></div>
+                    <input type="hidden" id="${cat}Rating">
+                `;
+                container.appendChild(row);
+
+                // Render buttons for this row
+                const btnContainer = row.querySelector(`#${cat}RatingRow`);
                 for (let i = 1; i <= 5; i++) {
                     const btn = document.createElement("button");
                     btn.type = "button";
                     btn.className = "rating-box w-8 h-8 text-sm";
                     btn.textContent = i;
-                    // Use touchstart for faster mobile response, but prevent ghost clicks
                     btn.onclick = (e) => {
-                        e.preventDefault(); // prevent double firing if touch+click
-                        document.getElementById(cat + "Rating").value = i;
-                        // clear siblings
-                        container.querySelectorAll(".rating-box").forEach(b => b.classList.remove("selected"));
+                        e.preventDefault();
+                        document.getElementById(`${cat}Rating`).value = i;
+                        btnContainer.querySelectorAll(".rating-box").forEach(b => b.classList.remove("selected"));
                         btn.classList.add("selected");
                     };
-                    container.appendChild(btn);
+                    btnContainer.appendChild(btn);
                 }
             });
         }
@@ -810,7 +815,8 @@
                 foodRating: getVal("foodRating"),
                 serviceRating: getVal("serviceRating"),
                 speedRating: getVal("speedRating"),
-                cleanlinessRating: "", // Removed from UI
+                ambianceRating: getVal("ambianceRating"),
+                valueRating: getVal("valueRating"),
                 comments: document.getElementById("comments").value || "",
                 photoDataUrl: photoDataUrl,
             };

@@ -25,7 +25,7 @@ function doPost(e) {
 
   try {
     // OPEN BY ID to ensure we hit the right sheet
-    const doc = SpreadsheetApp.openById("1oCo-B7vc4FOI7w3qykNLN6Z1Z5X0ag7MIY3_Y40K2UU");
+    const doc = SpreadsheetApp.openById("102A3Yz7BlKDJB7I_0lmYd1ek1CA7HAZyIg4R8ZYFjcw");
     let sheet = doc.getSheetByName(POJ_FEEDBACK_SHEET_NAME);
 
     // Create sheet if it doesn't exist
@@ -41,7 +41,8 @@ function doPost(e) {
         "Food Rating", 
         "Service Rating", 
         "Speed Rating", 
-        "Cleanliness Rating", 
+        "Ambiance Rating", 
+        "Value for Money Rating",
         "Comments", 
         "Photo URL"
       ];
@@ -76,8 +77,9 @@ function doPost(e) {
       data.overallRating,
       data.foodRating,
       data.serviceRating,
-      data.speedRating,
-      data.cleanlinessRating || "", // Handle missing field gracefully
+      data.speedRating || "",
+      data.ambianceRating || "",
+      data.valueRating || "",
       data.comments,
       fileUrl
     ];
@@ -107,7 +109,7 @@ function getOrCreateFolder(folderName) {
 }
 
 function setup() {
-  const doc = SpreadsheetApp.openById("1oCo-B7vc4FOI7w3qykNLN6Z1Z5X0ag7MIY3_Y40K2UU");
+  const doc = SpreadsheetApp.openById("102A3Yz7BlKDJB7I_0lmYd1ek1CA7HAZyIg4R8ZYFjcw");
   let sheet = doc.getSheetByName(POJ_FEEDBACK_SHEET_NAME);
   if (!sheet) {
     sheet = doc.insertSheet(POJ_FEEDBACK_SHEET_NAME);
@@ -121,7 +123,8 @@ function setup() {
         "Food Rating", 
         "Service Rating", 
         "Speed Rating", 
-        "Cleanliness Rating", 
+        "Ambiance Rating", 
+        "Value for Money Rating",
         "Comments", 
         "Photo URL"
     ];

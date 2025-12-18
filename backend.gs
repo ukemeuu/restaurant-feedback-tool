@@ -16,7 +16,7 @@
  * 6. Copy the Web App URL and paste it into index.html as SUBMISSION_ENDPOINT.
  */
 
-const POJ_FEEDBACK_SHEET_NAME = "Feedback";
+const POJ_FEEDBACK_SHEET_NAME = "POJ Feedback Form";
 const POJ_FEEDBACK_FOLDER_NAME = "Feedback_Images";
 
 function doPost(e) {
@@ -33,7 +33,6 @@ function doPost(e) {
       sheet = doc.insertSheet(POJ_FEEDBACK_SHEET_NAME);
       const headers = [
         "Timestamp", 
-        "Code", 
         "Service Type", 
         "Customer Name", 
         "Order ID", 
@@ -44,7 +43,8 @@ function doPost(e) {
         "Ambiance Rating", 
         "Value for Money Rating",
         "Comments", 
-        "Photo URL"
+        "Photo URL",
+        "Code"
       ];
       sheet.appendRow(headers);
     }
@@ -70,7 +70,6 @@ function doPost(e) {
     const nextRow = sheet.getLastRow() + 1;
     const newRow = [
       new Date(), // Timestamp
-      data.code,
       data.serviceType,
       data.customerName,
       data.orderId,
@@ -81,7 +80,8 @@ function doPost(e) {
       data.ambianceRating || "",
       data.valueRating || "",
       data.comments,
-      fileUrl
+      fileUrl,
+      data.code
     ];
 
     sheet.appendRow(newRow);
@@ -115,7 +115,6 @@ function setup() {
     sheet = doc.insertSheet(POJ_FEEDBACK_SHEET_NAME);
     const headers = [
         "Timestamp", 
-        "Code", 
         "Service Type", 
         "Customer Name", 
         "Order ID", 
@@ -126,7 +125,8 @@ function setup() {
         "Ambiance Rating", 
         "Value for Money Rating",
         "Comments", 
-        "Photo URL"
+        "Photo URL",
+        "Code"
     ];
     sheet.appendRow(headers);
   }

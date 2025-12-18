@@ -524,7 +524,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadQueue();
             renderServiceOptions();
-            renderDetailedRatings(["food", "service", "ambiance", "value"]); // Default view
+            renderDetailedRatings(["food", "service", "ambiance", "speed"]); // Default view
             setupPhoto();
             setupKeyboardNav();
 
@@ -668,9 +668,9 @@
 
             // Dynamic questions
             if (value === "Dine-in") {
-                renderDetailedRatings(["food", "service", "ambiance", "value"]);
+                renderDetailedRatings(["food", "service", "ambiance", "speed"]);
             } else {
-                renderDetailedRatings(["food", "service", "speed", "value"]);
+                renderDetailedRatings(["food", "service", "speed"]);
             }
 
             // Show next button or auto-advance
@@ -706,8 +706,7 @@
                 "food": "Food",
                 "service": "Service",
                 "speed": "Speed",
-                "ambiance": "Ambiance",
-                "value": "Value for Money"
+                "ambiance": "Ambiance"
             };
 
             categories.forEach(cat => {
@@ -831,7 +830,6 @@
                 serviceRating: getVal("serviceRating"),
                 speedRating: getVal("speedRating"),
                 ambianceRating: getVal("ambianceRating"),
-                valueRating: getVal("valueRating"),
                 comments: document.getElementById("comments").value || "",
                 photoDataUrl: photoDataUrl,
             };

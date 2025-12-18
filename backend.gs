@@ -41,7 +41,6 @@ function doPost(e) {
         "Service Rating", 
         "Speed Rating", 
         "Ambiance Rating", 
-        "Value for Money Rating",
         "Comments", 
         "Photo URL",
         "Code"
@@ -78,7 +77,6 @@ function doPost(e) {
       data.serviceRating,
       data.speedRating || "",
       data.ambianceRating || "",
-      data.valueRating || "",
       data.comments,
       fileUrl,
       data.code
@@ -123,7 +121,6 @@ function setup() {
         "Service Rating", 
         "Speed Rating", 
         "Ambiance Rating", 
-        "Value for Money Rating",
         "Comments", 
         "Photo URL",
         "Code"
